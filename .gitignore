@@ -1,0 +1,10 @@
+.DS_Store
+out/
+test.txt
+snippets.ini
+*.log
+testing
+testing-file.txt
+user-prefs.properties
+recentfiles
+loaded-plugins.txt

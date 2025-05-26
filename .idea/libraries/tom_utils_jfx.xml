@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="tom.utils.jfx">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Developer/TomUtilsJFX/out/artifacts/tom_jfx_jar/tom.utils.jfx.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/Developer/TomUtilsJFX/out/artifacts/tom_jfx_jar/tom.utils.jfx.jar!/" />
+    </SOURCES>
+  </library>
+</component>

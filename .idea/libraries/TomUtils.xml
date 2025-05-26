@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="TomUtils">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Developer/TomUtils/out/artifacts/TomUtils_jar/TomUtils.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/Developer/TomUtils/out/artifacts/TomUtils_jar/TomUtils.jar!/" />
+    </SOURCES>
+  </library>
+</component>
