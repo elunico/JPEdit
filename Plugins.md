@@ -15,14 +15,14 @@ Plugins can be made for JPEdit currently using the following process.
 *Note: throughout the tutorial, we will refer to a "main class" this class is the class which implements the `JPEditPlugin` interface*
 
 #### Step 1 - Build the JPEdit Jar
-The first thing you will need to do is get the JPEdit jar. You can obtain the code from [GitLab](https://gitlab.com/tpovinelli/jpedit)
+The first thing you will need to do is get the JPEdit jar. You can obtain the code from [GitHub](https://github.com/elunico/jpedit)
 and build it however you want. The recommended way is with [IntelliJ](https://www.jetbrains.com/idea/) as it is already an IntelliJ project.
 
 #### Important Caveat
-Unfortunately, JavaFX is no longer bunded with the JDK (I am very mad about it), so it is a separate dependency. Also, unfortunately, it
-is a platform specific dependency. Therefore, while a TomUtils JAR is included as part of this project, 
 JavaFX is not. You will need to go [to this website](https://gluonhq.com/products/javafx/) to download JavaFX for 
-your platform and add it as a dependency. I recommend opening all projects (JPEdit or any plugins you want to use or create) in IntelliJ. You can 
+Unfortunately, JavaFX is no longer bundled with the JDK and it is a platform specific dependency. Therefore, you will need to 
+download JavaFX for your platform and add it as a dependency. I recommend opening all projects (JPEdit or any plugins
+you want to use or create) in IntelliJ. You can 
 then add the downloaded JavaFX jars as library dependencies in the project structure of your plugin in IntelliJ. 
 
 #### Step 2 - Creating the Plugin Project
@@ -49,7 +49,7 @@ For example, if I wanted to create the sample plugin "Example Plugin" I would cr
 
 Your main class **must** go in the root of the package `jpplugin.exampleplugin` or whatever you choose to name the second package. 
 
-#### JPEdit No used the Java Module system from 2022-2025. module-info.java is no longer required
+#### JPEdit used the Java Module system from 2022-2025. module-info.java is no longer required
 ~~#### Step 4 - Creating the `module-info.java` File~~
 
 ~~Since JPEdit is now compatible with the module system of Java, you must create–in the source root of your project—a `module-info.java`~~

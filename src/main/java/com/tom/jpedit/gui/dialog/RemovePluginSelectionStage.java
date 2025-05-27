@@ -3,6 +3,7 @@ package com.tom.jpedit.gui.dialog;
 import com.tom.jpedit.ApplicationContext;
 import com.tom.jpedit.gui.DependantStage;
 import com.tom.jpedit.gui.JPEditWindow;
+import com.tom.jpedit.gui.i18l.Strings;
 import com.tom.jpedit.util.LoadedJPPlugin;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -36,8 +37,8 @@ public class RemovePluginSelectionStage extends DependantStage {
     buttonBox.setPadding(new Insets(5));
     buttonBox.setSpacing(5);
 
-    Button removeButton = new Button("Remove Plugin");
-    Button closeButton = new Button("Close");
+    Button removeButton = new Button(Strings.Content.BUTTON_REMOVE.text);
+    Button closeButton = new Button(Strings.Content.FILE_MENU_ITEM_CLOSE.text);
 
     buttonBox.getChildren().addAll(closeButton, removeButton);
 

@@ -4,8 +4,11 @@ import com.tom.jpedit.ApplicationContext;
 import com.tom.jpedit.gui.DependableStage;
 import com.tom.jpedit.gui.DependantStage;
 import com.tom.jpedit.gui.FontUtil;
+import com.tom.jpedit.gui.components.OkButton;
+import com.tom.jpedit.gui.confirmation.ConfirmationDialog;
+import com.tom.jpedit.gui.confirmation.ConfirmationType;
+import com.tom.jpedit.gui.i18l.Strings;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -13,22 +16,29 @@ import javafx.scene.layout.VBox;
 public class ChangeLocalePrompt extends DependantStage {
     public ChangeLocalePrompt(DependableStage owner) {
         super(owner);
-        setTitle("Change Locale");
-        var title = new Label("Choose Your Locale");
+        setTitle(Strings.Content.CHANGE_LOCAL_PROMPT_TITLE.text);
+            var title = new Label(Strings.Content.FILE_MENU_ITEM_OPEN.text);
         title.setFont(FontUtil.getTitleLabelFont());
 
-        var finePrint = new Label("If your locale does not appear, it is not currently supported. But you can add the strings for it if you would like.");
+        var finePrint = new Label(Strings.Content.CHANGE_LOCAL_PROMPT_FINE_PRINT.text);
         finePrint.setFont(FontUtil.getNormalItalicFont());
 
-        var warningLabel = new Label("YOU MUST RESTART TO SEE CHANGES");
+        var warningLabel = new Label(Strings.Content.CHANGE_LOCAL_PROMPT_FINE_RESTART_WARNING.text);
 
         var choices = new ChoiceBox<String>();
         choices.getItems().addAll(InternationalLanguageSelector.getExistingLanguageCodes());
-        choices.getSelectionModel().select(0);
+        choices.getSelectionModel().select(Strings.getLocale().getLanguage());
 
-        var okButton = new Button("OK");
-        okButton.setOnAction(event -> {
+        var okButton = new OkButton(event -> {
             ApplicationContext.getContext().getUserPreferences().setPreferredLocale(choices.getSelectionModel().getSelectedItem());
+            close();
+            var w = new ConfirmationDialog(null, "Restart?", "Ok to close?", "JPEdit needs to restart to display locale changes.\nDo you want to exit the program now?");
+            var resp = w.showPrompt();
+            if (resp.equals(ConfirmationType.YES)) {
+                ApplicationContext.terminateEarly();
+            } else {
+                w.close();
+            }
         });
 
         var root = new VBox();

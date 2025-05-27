@@ -2,6 +2,9 @@ package com.tom.jpedit.gui.confirmation;
 
 import com.tom.jpedit.gui.DependantStage;
 import com.tom.jpedit.gui.JPEditWindow;
+import com.tom.jpedit.gui.components.CancelButton;
+import com.tom.jpedit.gui.components.NoButton;
+import com.tom.jpedit.gui.components.YesButton;
 import com.tom.jpedit.logging.JPLogger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,23 +23,20 @@ public class ConfirmationDialog extends DependantStage {
   private final String title;
   private final String head;
   private final String message;
-  private final JPEditWindow owner;
 
   public ConfirmationDialog(@Nullable JPEditWindow owner, String title, String head, String message) {
-    this.owner = owner;
+    super(owner);
     this.title = title;
     this.head = head;
     this.message = message;
-    if (owner != null) {
-      owner.registerDependent(this);
-    }
   }
 
   public @NotNull ConfirmationType showPrompt() {
     if (isAlreadyShowing()) {
+      System.out.println("Already showing");
       return ConfirmationType.CANCEL;
     }
-    Stage e = new Stage();
+//    Stage e = new Stage();
     VBox box = new VBox();
     GridPane buttonPane = new GridPane();
     box.setPadding(new Insets(15.0));
@@ -57,22 +57,19 @@ public class ConfirmationDialog extends DependantStage {
       ConfirmationType confirmed = ConfirmationType.CANCEL;
     };
 
-    Button noButton = new Button("No");
-    noButton.setOnAction(i -> {
+    Button noButton = new NoButton(i -> {
       ref.confirmed = ConfirmationType.NO;
-      e.close();
+      close();
     });
 
-    Button yesButton = new Button("Yes");
-    yesButton.setOnAction(i -> {
+    Button yesButton = new YesButton(i -> {
       ref.confirmed = ConfirmationType.YES;
-      e.close();
+      close();
     });
 
-    Button cancelButton = new Button("Cancel");
-    cancelButton.setOnAction(i -> {
+    Button cancelButton = new CancelButton(i -> {
       ref.confirmed = ConfirmationType.CANCEL;
-      e.close();
+      close();
     });
 
     buttonPane.add(cancelButton, 0, 0);
@@ -81,11 +78,11 @@ public class ConfirmationDialog extends DependantStage {
     box.getChildren().addAll(headLabel, messageLabel, buttonPane);
 
     Scene scene = new Scene(box);
-    e.setScene(scene);
+    setScene(scene);
 
-    e.setTitle(title);
+    setTitle(title);
 
-    e.showAndWait();
+    showAndWait();
     JPLogger.debug(JPLogger.getAppLog(), "confirm = " + ref.confirmed);
     return ref.confirmed;
   }

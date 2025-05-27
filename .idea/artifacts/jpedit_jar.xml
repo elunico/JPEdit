@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="jpedit:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/jpedit_jar</output-path>
+    <root id="archive" name="jpedit.jar">
+      <element id="module-output" name="jpedit" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-graphics-23.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-graphics-23-mac-aarch64.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-base-23.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-base-23-mac-aarch64.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Developer/TomUtilsJFX/out/artifacts/tom_jfx_jar/tom.utils.jfx.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-controls-23.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-controls-23-mac-aarch64.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Developer/TomUtils/out/artifacts/TomUtils_jar/TomUtils.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

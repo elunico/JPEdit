@@ -27,7 +27,7 @@ public class InternationalStringEditorWindow extends DependantStage {
     public InternationalStringEditorWindow(JPEditWindow owner, String code) {
         super(owner);
 
-        setTitle("Editing Strings for " + code);
+        setTitle(Strings.Content.INTERNATIONAL_STRING_EDITOR_TITLE.text + code);
 
         var root = new VBox();
         root.setPadding(new Insets(5.0));
@@ -38,7 +38,7 @@ public class InternationalStringEditorWindow extends DependantStage {
         langBox.setSpacing(10.0);
         populateI18lStrings(Strings.getFileStrings(new Locale(code)), langBox);
 
-        var saveButton = new Button("Save to disk");
+        var saveButton = new Button(Strings.Content.BUTTON_SAVE_DISK.text);
         saveButton.setPrefWidth(150.0);
         saveButton.setOnAction((event) -> {
             var p = langBox.getChildrenUnmodifiable().stream().filter((it) -> it instanceof HBox);
@@ -53,10 +53,10 @@ public class InternationalStringEditorWindow extends DependantStage {
             });
 
         });
-        Label titleLabel = new Label("GUI Strings for language  '" + code + "'");
+        Label titleLabel = new Label(Strings.Content.INTERNATIONAL_STRING_EDITOR_INFO_LABEL.text + Strings.Content.INTERNATIONAL_STRING_EDITOR_CODE_DELIM_LEFT + code + Strings.Content.INTERNATIONAL_STRING_EDITOR_CODE_DELIM_RIGHT);
         titleLabel.setFont(FontUtil.getTitleLabelFont());
         root.getChildren().add(titleLabel);
-        Label messageLabel = new Label("Changes will not be saved until the button is pressed!");
+        Label messageLabel = new Label(Strings.Content.SAVE_WARNING_MESSAGE.text);
         messageLabel.setFont(FontUtil.getNormalItalicFont());
         root.getChildren().add(messageLabel);
         root.getChildren().add(langBox);
@@ -90,7 +90,7 @@ public class InternationalStringEditorWindow extends DependantStage {
             valueField.setPrefWidth(500);
             h.getChildren().addAll(keyField, valueField);
             h.setSpacing(10.0);
-            var removeButton = new Button("Remove");
+            var removeButton = new Button(Strings.Content.BUTTON_REMOVE.text);
             removeButton.setOnAction((event) -> {
                 stringBox.getChildren().remove(h);
             });

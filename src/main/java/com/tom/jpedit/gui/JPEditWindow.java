@@ -111,6 +111,7 @@ public class JPEditWindow extends DependableStage {
     textArea.setOnContextMenuRequested(e -> wasDirtied());
     addEventHandler(KeyEvent.KEY_PRESSED, new JPEditWindowKeyHandler(this));
     addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, event -> {
+      JPLogger.getAppLog().info("Closing Window with ID=" + id);
       new CloseWindowActionHandler(this).handle(ActionHandler.asAction(event));
       event.consume();
     });

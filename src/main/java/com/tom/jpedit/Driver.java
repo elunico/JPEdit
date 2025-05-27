@@ -37,7 +37,9 @@ public class Driver extends Application {
         Thread.UncaughtExceptionHandler oldHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(JavaFXUtilsKt::defaultWindowedExceptionHandler);
 
-        Strings.loadStrings(context.getUserPreferences().getPreferredLocale());
+        var preferredLocale = context.getUserPreferences().getPreferredLocale();
+        JPLogger.getAppLog().info("Preferred locale is " + preferredLocale);
+        Strings.loadStrings(preferredLocale);
 
         String tempSaveDir = context.getProperties().getProperty("tempsaves_dir");
         try {
@@ -110,7 +112,7 @@ public class Driver extends Application {
     }
 
     private void normalStartUp() {
-        JPEditWindow window = new JPEditWindow("Untitled 1");
+        JPEditWindow window = new JPEditWindow(Strings.Content.WINDOW_TITLE_DEFAULT.text);
         context.registerWindow(window);
         window.show();
         JPLogger.getAppLog().info("main window showing");

@@ -11,17 +11,58 @@ public final class Strings {
 
     public enum Content {
 
+        HELP_ITEM,
 
-        MENU_TITLE_ADVANCED,
-        WINDOW_TITLE_DEFAULT,
-        MENU_TITLE_EDIT,
-        FILE_MENU_ITEM_CLEAR_RECENT_FILES,
-        FILE_MENU_ITEM_CLOSE,
-        FILE_MENU_ITEM_EXIT,
-        FILE_MENU_ITEM_NEW,
-        FILE_MENU_ITEM_NEW_WINDOW,
+        // BUTTONS
+        BUTTON_NO,
+        BUTTON_YES,
+        BUTTON_CANCEL,
+        BUTTON_OK,
+        BUTTON_REMOVE,
+        BUTTON_SAVE_DISK,
+
+        // UI LABELS AND TEXT
         UILABEL_LAST_SAVE_LABEL,
         UILABEL_LAST_SAVE_TIME,
+
+        CHANGE_LOCAL_PROMPT_TITLE,
+        CHANGE_LOCAL_PROMPT_CHOOSE_LABEL,
+        CHANGE_LOCAL_PROMPT_FINE_PRINT,
+        CHANGE_LOCAL_PROMPT_FINE_RESTART_WARNING,
+
+        INTERNATIONAL_SELECT_ADD_BUTTON,
+        INTERNATIONAL_SELECT_ADD_TITLE,
+        INTERNATIONAL_SELECT_ADD_HEADER,
+        INTERNATIONAL_STRING_EDITOR_TITLE,
+
+        INTERNATIONAL_STRING_EDITOR_INFO_LABEL,
+        INTERNATIONAL_STRING_EDITOR_CODE_DELIM_LEFT,
+        INTERNATIONAL_STRING_EDITOR_CODE_DELIM_RIGHT,
+
+        SAVE_WARNING_MESSAGE,
+
+        FONT_PROMPT_TITLE,
+        FONT_PROMPT_FAMILY_LABEL,
+        FONT_PROMPT_SIZE_LABEL,
+        FONT_PROMPT_WEIGHT_LABEL,
+        FONT_PROMPT_POSTURE_LABEL,
+
+        FIND_DIALOG_FIND_TITLE,
+        FIND_DIALOG_REPLACE_TITLE,
+        FIND_DIALOG_FIND_LABEL,
+        FIND_DIALOG_REPLACE_LABEL,
+        FIND_DIALOG_IGNORE_CASE,
+        FIND_DIALOG_FIND_NEXT_BUTTON,
+        FIND_DIALOG_FIND_PREVIOUS_BUTTON,
+        FIND_DIALOG_REPLACE_BUTTON,
+        FIND_DIALOG_REPLACE_ALL_BUTTON,
+
+        WINDOW_TITLE_DEFAULT,
+
+        MENU_TITLE_ADVANCED,
+        MENU_TITLE_EDIT,
+        MENU_TITLE_FILE,
+        MENU_TITLE_FORMAT,
 
         AUTOSAVE_WORKER_FAILED_DIR_INACC_STRING,
         AUTOSAVE_WORKER_FAILED_DIR_INACC_TITLE,
@@ -31,13 +72,24 @@ public final class Strings {
         FILE_MENU_PRINT,
         FILE_MENU_CLEAR_RECENTS,
         FILE_MENU_PATH_TOGGLE,
-
         FILE_MENU_ITEM_OPEN,
         FILE_MENU_ITEM_RECENT_FILES,
         FILE_MENU_ITEM_SAVE,
         FILE_MENU_ITEM_SAVE_AS,
-        MENU_TITLE_FILE,
-        MENU_TITLE_FORMAT,
+        FILE_MENU_ITEM_CLEAR_RECENT_FILES,
+        FILE_MENU_ITEM_CLOSE,
+        FILE_MENU_ITEM_EXIT,
+        FILE_MENU_ITEM_NEW,
+        FILE_MENU_ITEM_NEW_WINDOW,
+
+        ADVANCED_MENU_AUTOSAVE_ITEM,
+        ADVANCED_MENU_AUTOSAVE_ON_ITEM,
+        ADVANCED_MENU_AUTOSAVE_OFF_ITEM,
+        ADVANCED_MENU_AUTOSAVE_DELAY_ITEM,
+        ADVANCED_MENU_ADD_PLUGIN,
+        ADVANCED_MENU_REMOVE_PLUGIN,
+        ADVANCED_MENU_CHANGE_LOCALE,
+        ADVANCED_MENU_ADD_EDIT_STRINGS,
 
         ;
 
@@ -50,14 +102,18 @@ public final class Strings {
 
     public static Locale locale = Locale.getDefault();
 
+    public static Locale getLocale() {
+        return locale;
+    }
+
     // no instances
     private Strings() {
     }
 
     public static void loadStrings(Locale locale) {
+        Strings.locale = locale;
         var fileStrings = getFileStrings(locale);
         for (var entry : fileStrings.entrySet()) {
-            System.out.println(entry);
             Content content = entry.getKey();
             content.text = entry.getValue();
         }
@@ -75,7 +131,7 @@ public final class Strings {
                     if (s.trim().isEmpty() || s.startsWith("#")) {
                         continue;
                     }
-                    
+
                     var split = s.split("=", 2); // limit to 2 parts to handle = in values
                     if (split.length >= 1) {
                         String key = split[0].trim();
@@ -93,8 +149,8 @@ public final class Strings {
                 }
             }
         } catch (IOException e) {
-            JPLogger.getAppLog().warning("Could not read language strings file for " + locale.getLanguage() + 
-            "!\nUsing English strings.\nError: " + e.getMessage());
+            JPLogger.getAppLog().warning("Could not read language strings file for " + locale.getLanguage() +
+                    "!\nUsing English strings.\nError: " + e.getMessage());
         }
         return strings;
     }

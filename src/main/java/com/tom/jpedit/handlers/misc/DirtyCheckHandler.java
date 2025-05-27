@@ -31,6 +31,7 @@ public class DirtyCheckHandler extends ActionHandler {
         "The file has been modified since saving. Do you want to save? Answering 'no' will DESTROY changes."
     );
     ConfirmationType choice = dialog.showPrompt();
+    JPLogger.getAppLog().info("Choice was " + choice);
 
     if (choice == ConfirmationType.CANCEL) {
       // abort closing

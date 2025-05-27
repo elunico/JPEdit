@@ -3,6 +3,9 @@ package com.tom.jpedit.gui.dialog;
 import com.tom.jpedit.ApplicationContext;
 import com.tom.jpedit.gui.DependantStage;
 import com.tom.jpedit.gui.JPEditWindow;
+import com.tom.jpedit.gui.components.CancelButton;
+import com.tom.jpedit.gui.components.OkButton;
+import com.tom.jpedit.gui.i18l.Strings;
 import com.tom.jpedit.util.FontStyleParser;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -30,12 +33,12 @@ public class FontPrompt extends DependantStage {
 
   public FontPrompt(@NotNull JPEditWindow owner) {
     this.owner = owner;
-    super.setTitle("Choose Font");
+    super.setTitle(Strings.Content.FONT_PROMPT_TITLE.text);
     GridPane root = new GridPane();
-    Label fontFamilyLabel = new Label("Family: ");
-    Label fontSizeLabel = new Label("Size: ");
-    Label fontWeightLabel = new Label("Weight: ");
-    Label fontPostureLabel = new Label("Italic?: ");
+    Label fontFamilyLabel = new Label(Strings.Content.FONT_PROMPT_FAMILY_LABEL.text);
+    Label fontSizeLabel = new Label(Strings.Content.FONT_PROMPT_SIZE_LABEL.text);
+    Label fontWeightLabel = new Label(Strings.Content.FONT_PROMPT_WEIGHT_LABEL.text );
+    Label fontPostureLabel = new Label(Strings.Content.FONT_PROMPT_POSTURE_LABEL.text);
 
     fontFamilyBox = new ChoiceBox<>(FXCollections.observableArrayList(Font.getFamilies()));
     fontSizeField = new TextField();
@@ -62,11 +65,8 @@ public class FontPrompt extends DependantStage {
     root.add(fontWeightBox, 1, 2);
     root.add(fontItalicBox, 1, 3);
 
-    Button cancelButton = new Button("Cancel");
-    Button okButton = new Button("Ok");
-
-    cancelButton.setOnAction(e -> close());
-    okButton.setOnAction(e -> {
+    Button cancelButton = new CancelButton(e -> close());
+    Button okButton = new OkButton(e -> {
       setFont();
       close();
     });

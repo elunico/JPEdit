@@ -3,6 +3,7 @@ package com.tom.jpedit.gui.dialog;
 import com.tom.jpedit.gui.DependantStage;
 import com.tom.jpedit.gui.FontUtil;
 import com.tom.jpedit.gui.JPEditWindow;
+import com.tom.jpedit.gui.components.OkButton;
 import com.tom.jpedit.gui.i18l.Strings;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -38,7 +39,7 @@ public class InternationalLanguageSelector extends DependantStage {
     public InternationalLanguageSelector(JPEditWindow owner) {
         super(owner);
 
-        var titleLabel = new Label("Choose a Locale");
+        var titleLabel = new Label(Strings.Content.CHANGE_LOCAL_PROMPT_CHOOSE_LABEL.text);
         titleLabel.setFont(FontUtil.getTitleLabelFont());
 
         var selectBox = new ChoiceBox<String>();
@@ -48,12 +49,12 @@ public class InternationalLanguageSelector extends DependantStage {
             selectBox.getSelectionModel().select(0);
         }
 
-        var button = new Button("Add new language");
+        var button = new Button(Strings.Content.INTERNATIONAL_SELECT_ADD_BUTTON.text);
         button.setPrefWidth(150.0);
         button.setOnAction(event -> {
-            var news = JavaFXUtilsKt.promptForInput("New Language", "Enter new language code", "");
-            languageCode = news;
+            languageCode = JavaFXUtilsKt.promptForInput(Strings.Content.INTERNATIONAL_SELECT_ADD_TITLE.text, Strings.Content.INTERNATIONAL_SELECT_ADD_HEADER.text, "");
             if (languageCode != null && !languageCode.isEmpty()) {
+                languageCode = languageCode.toLowerCase();
                 var newFile = new File("lang", languageCode + ".properties");
                 try {
                     Strings.createTemplate(newFile);
@@ -67,11 +68,9 @@ public class InternationalLanguageSelector extends DependantStage {
 
         });
 
-        var okButton = new Button("OK");
-        okButton.setOnAction(event -> {
+        var okButton = new OkButton(event -> {
             languageCode = selectBox.getSelectionModel().getSelectedItem();
             close();
-
         });
         okButton.setPrefWidth(150.0);
 

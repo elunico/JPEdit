@@ -1,6 +1,7 @@
 package com.tom.jpedit.gui.find;
 
 import com.tom.jpedit.gui.JPEditWindow;
+import com.tom.jpedit.gui.i18l.Strings;
 import com.tom.jpedit.handlers.edit.FindDialogNextActionHandler;
 import com.tom.jpedit.handlers.edit.FindDialogPreviousActionHandler;
 import com.tom.jpedit.handlers.edit.ReplaceAllItemHandler;
@@ -21,23 +22,23 @@ public class ReplaceDialog extends FindReplaceBase {
 
   public ReplaceDialog(@NotNull JPEditWindow owner) {
     super.owner = owner;
-    super.setTitle("Replace");
+    super.setTitle(Strings.Content.FIND_DIALOG_REPLACE_TITLE.text);
     GridPane root = new GridPane();
     root.setHgap(5);
     root.setVgap(5);
     root.setPadding(new Insets(5));
-    Label findTextLabel = new Label("Find: ");
-    Label replaceTextLabel = new Label("Replace: ");
+    Label findTextLabel = new Label(Strings.Content.FIND_DIALOG_FIND_LABEL.text);
+    Label replaceTextLabel = new Label(Strings.Content.FIND_DIALOG_REPLACE_LABEL.text);
     findTextText = new TextField();
     replaceTextText = new TextField();
-    caseInsensitiveBox = new CheckBox("Ignore case?");
+    caseInsensitiveBox = new CheckBox(Strings.Content.FIND_DIALOG_IGNORE_CASE.text);
     GridPane.setColumnSpan(caseInsensitiveBox, 2);
     GridPane.setColumnSpan(findTextText, 2);
     GridPane.setColumnSpan(replaceTextText, 2);
-    nextButton = new Button("Find Next");
-    Button replaceButton = new Button("Replace");
-    Button replaceAllButton = new Button("Replace All");
-    Button previousButton = new Button("Find Previous");
+    nextButton = new Button(Strings.Content.FIND_DIALOG_FIND_NEXT_BUTTON.text);
+    Button replaceButton = new Button(Strings.Content.FIND_DIALOG_REPLACE_BUTTON.text);
+    Button replaceAllButton = new Button(Strings.Content.FIND_DIALOG_REPLACE_ALL_BUTTON.text);
+    Button previousButton = new Button(Strings.Content.FIND_DIALOG_FIND_PREVIOUS_BUTTON.text);
 
     replaceButton.setPrefWidth(125);
     replaceAllButton.setPrefWidth(125);

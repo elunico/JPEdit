@@ -3,6 +3,7 @@ package com.tom.jpedit.gui.menu;
 import com.tom.jpedit.Action;
 import com.tom.jpedit.gui.JPEditWindow;
 import com.tom.jpedit.gui.dialog.HelpDialog;
+import com.tom.jpedit.gui.i18l.Strings;
 import com.tom.jpedit.handlers.misc.*;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -12,12 +13,12 @@ import javafx.scene.control.SeparatorMenuItem;
 public class JPEditAdvancedMenu extends JPEditMenu {
   public JPEditAdvancedMenu(JPEditWindow owner, String s) {
     super(owner, s);
-    final Menu autoSaveControlMenu = new Menu("Autosave");
-    final RadioMenuItem autoSaveOnItem = new RadioMenuItem("Turn autosave on");
-    final RadioMenuItem autoSaveOffItem = new RadioMenuItem("Turn autosave off");
-    final MenuItem helpItem = new MenuItem("Help");
-    final MenuItem addPluginItem = new MenuItem("Add Plugin (experimental)");
-    final MenuItem removePluginItem = new MenuItem("Remove Plugin (experimental)");
+    final Menu autoSaveControlMenu = new Menu(Strings.Content.ADVANCED_MENU_AUTOSAVE_ITEM.text);
+    final RadioMenuItem autoSaveOnItem = new RadioMenuItem(Strings.Content.ADVANCED_MENU_AUTOSAVE_ON_ITEM.text);
+    final RadioMenuItem autoSaveOffItem = new RadioMenuItem(Strings.Content.ADVANCED_MENU_AUTOSAVE_OFF_ITEM.text);
+    final MenuItem helpItem = new MenuItem(Strings.Content.HELP_ITEM.text);
+    final MenuItem addPluginItem = new MenuItem(Strings.Content.ADVANCED_MENU_ADD_PLUGIN.text);
+    final MenuItem removePluginItem = new MenuItem(Strings.Content.ADVANCED_MENU_REMOVE_PLUGIN.text);
 
     autoSaveOnItem.setSelected(true);
 
@@ -26,7 +27,7 @@ public class JPEditAdvancedMenu extends JPEditMenu {
 
     autoSaveControlMenu.getItems().addAll(autoSaveOnItem, autoSaveOffItem);
 
-    final MenuItem autoSaveTimeItem = new MenuItem("Change autosave delay");
+    final MenuItem autoSaveTimeItem = new MenuItem(Strings.Content.ADVANCED_MENU_AUTOSAVE_DELAY_ITEM.text);
     autoSaveTimeItem.setOnAction(new ChangeAutoSaveTimeActionHandler(owner));
 
     addPluginItem.setOnAction(new AddPluginActionHandler(owner));
@@ -38,10 +39,10 @@ public class JPEditAdvancedMenu extends JPEditMenu {
     });
     JPEditWindow.actionControlMap().put(Action.SHOW_HELP_ACTION, helpItem);
 
-    MenuItem addInternationalStringsItem = new MenuItem("Add International Strings");
+    MenuItem addInternationalStringsItem = new MenuItem(Strings.Content.ADVANCED_MENU_ADD_EDIT_STRINGS.text);
     addInternationalStringsItem.setOnAction(new AddInternationalStringsHandler(owner));
 
-    MenuItem changeLocaleItem = new MenuItem("Change Locale");
+    MenuItem changeLocaleItem = new MenuItem(Strings.Content.ADVANCED_MENU_CHANGE_LOCALE.text);
     changeLocaleItem.setOnAction(new ChangeLocaleHandler(owner));
 
     getItems().addAll(
