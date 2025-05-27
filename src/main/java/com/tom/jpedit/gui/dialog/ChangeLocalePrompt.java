@@ -7,12 +7,15 @@ import com.tom.jpedit.gui.FontUtil;
 import com.tom.jpedit.gui.components.OkButton;
 import com.tom.jpedit.gui.confirmation.ConfirmationDialog;
 import com.tom.jpedit.gui.confirmation.ConfirmationType;
-import com.tom.jpedit.gui.i18l.Strings;
+import com.tom.jpedit.gui.i18n.Strings;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
+/**
+ * Prompts the user to change their Locale using a JavaFX Stage
+ */
 public class ChangeLocalePrompt extends DependantStage {
     public ChangeLocalePrompt(DependableStage owner) {
         super(owner);
@@ -26,13 +29,13 @@ public class ChangeLocalePrompt extends DependantStage {
         var warningLabel = new Label(Strings.Content.CHANGE_LOCAL_PROMPT_FINE_RESTART_WARNING.text);
 
         var choices = new ChoiceBox<String>();
-        choices.getItems().addAll(InternationalLanguageSelector.getExistingLanguageCodes());
+        choices.getItems().addAll(ApplicationContext.getExistingLanguageCodes());
         choices.getSelectionModel().select(Strings.getLocale().getLanguage());
 
         var okButton = new OkButton(event -> {
             ApplicationContext.getContext().getUserPreferences().setPreferredLocale(choices.getSelectionModel().getSelectedItem());
             close();
-            var w = new ConfirmationDialog(null, "Restart?", "Ok to close?", "JPEdit needs to restart to display locale changes.\nDo you want to exit the program now?");
+            var w = new ConfirmationDialog(null, "Quit Program", "Ok to close?", "JPEdit needs to restart to display locale changes.\nDo you want to exit the program now?");
             var resp = w.showPrompt();
             if (resp.equals(ConfirmationType.YES)) {
                 ApplicationContext.terminateEarly();
@@ -48,8 +51,5 @@ public class ChangeLocalePrompt extends DependantStage {
         root.setPadding(new javafx.geometry.Insets(5));
 
         setScene(new Scene(root));
-
-
-
     }
 }

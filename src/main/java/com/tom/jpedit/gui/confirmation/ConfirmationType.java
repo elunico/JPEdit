@@ -1,5 +1,8 @@
 package com.tom.jpedit.gui.confirmation;
 
+/**
+ * @see ConfirmationDialog
+ */
 public enum ConfirmationType {
 
   /**

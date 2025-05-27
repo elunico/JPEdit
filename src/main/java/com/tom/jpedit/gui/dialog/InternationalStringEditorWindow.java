@@ -3,7 +3,7 @@ package com.tom.jpedit.gui.dialog;
 import com.tom.jpedit.gui.DependantStage;
 import com.tom.jpedit.gui.FontUtil;
 import com.tom.jpedit.gui.JPEditWindow;
-import com.tom.jpedit.gui.i18l.Strings;
+import com.tom.jpedit.gui.i18n.Strings;
 import com.tom.jpedit.logging.JPLogger;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -11,7 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import tom.utils.file.FileUtilsKt;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,7 +35,7 @@ public class InternationalStringEditorWindow extends DependantStage {
         var langBox = new VBox();
         langBox.setPadding(new Insets(5.0));
         langBox.setSpacing(10.0);
-        populateI18lStrings(Strings.getFileStrings(new Locale(code)), langBox);
+        populateI18nStrings(Strings.getFileStrings(new Locale(code)), langBox);
 
         var saveButton = new Button(Strings.Content.BUTTON_SAVE_DISK.text);
         saveButton.setPrefWidth(150.0);
@@ -49,7 +48,7 @@ public class InternationalStringEditorWindow extends DependantStage {
                 var v = ((TextField) h.getChildrenUnmodifiable().get(1)).getText();
                 map.put(k, v);
                 var filePath = new File("lang/" + code + ".properties");
-                writeI18lStrings(filePath, map);
+                writeI18nStrings(filePath, map);
             });
 
         });
@@ -68,7 +67,7 @@ public class InternationalStringEditorWindow extends DependantStage {
         setHeight(700);
     }
 
-    private static void writeI18lStrings(File filePath, HashMap<String, String> map) {
+    private static void writeI18nStrings(File filePath, HashMap<String, String> map) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             for (var entry: map.entrySet()) {
                 String line = entry.getKey() + "=" + entry.getValue();
@@ -81,7 +80,7 @@ public class InternationalStringEditorWindow extends DependantStage {
         }
     }
 
-    private void populateI18lStrings(Map<Strings.Content, String> strings, VBox stringBox) {
+    private void populateI18nStrings(Map<Strings.Content, String> strings, VBox stringBox) {
         for (var entry : strings.entrySet()) {
             var h = new HBox();
             TextField keyField = new TextField(entry.getKey().toString());

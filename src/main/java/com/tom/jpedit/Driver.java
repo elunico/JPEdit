@@ -3,7 +3,7 @@ package com.tom.jpedit;
 import com.tom.jpedit.gui.JPEditWindow;
 import com.tom.jpedit.gui.confirmation.ConfirmationDialog;
 import com.tom.jpedit.gui.confirmation.ConfirmationType;
-import com.tom.jpedit.gui.i18l.Strings;
+import com.tom.jpedit.gui.i18n.Strings;
 import com.tom.jpedit.logging.JPLogger;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -15,8 +15,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Locale;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**

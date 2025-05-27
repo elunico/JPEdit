@@ -11,8 +11,13 @@ import java.time.Duration;
 import java.util.Locale;
 import java.util.Properties;
 
+/**
+ * Class representing user preferences specific to this Application.
+ * Can be queried from {@link com.tom.jpedit.ApplicationContext}
+ */
 public class UserPreferences extends Properties {
 
+  // Constants for retrieving preferences by key
   public static final String FONT_FAMILY = "font-family";
   public static final String FONT_SIZE = "font-size";
   public static final String FULL_PATH_SHOWING = "is-full-path-showing";

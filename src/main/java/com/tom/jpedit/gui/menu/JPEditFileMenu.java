@@ -1,7 +1,7 @@
 package com.tom.jpedit.gui.menu;
 
 import com.tom.jpedit.gui.JPEditWindow;
-import com.tom.jpedit.gui.i18l.Strings;
+import com.tom.jpedit.gui.i18n.Strings;
 import com.tom.jpedit.handlers.file.*;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;

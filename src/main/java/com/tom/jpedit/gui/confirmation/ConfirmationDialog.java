@@ -19,11 +19,25 @@ import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Class representing a dialog prompt to ask the user to confirm or cancel something
+ * This class provides no external behavior; it shows a dialog, pauses the thread until
+ * the user answers and returns the choice.
+ *
+ * Note that the execution of the UI is paused until <code>showPrompt()</code> returns
+ */
 public class ConfirmationDialog extends DependantStage {
   private final String title;
   private final String head;
   private final String message;
 
+  /**
+   * Construct a confirmation dialog with the corresponding message
+   * @param owner the owner to tie this window to
+   * @param title title of the window
+   * @param head main text body
+   * @param message the message text of the window
+   */
   public ConfirmationDialog(@Nullable JPEditWindow owner, String title, String head, String message) {
     super(owner);
     this.title = title;
@@ -31,12 +45,15 @@ public class ConfirmationDialog extends DependantStage {
     this.message = message;
   }
 
+  /**
+   * Show the prompt and wait for a response.
+   * @return the ConfirmationType based on the button clicked by the user
+   */
   public @NotNull ConfirmationType showPrompt() {
     if (isAlreadyShowing()) {
       System.out.println("Already showing");
       return ConfirmationType.CANCEL;
     }
-//    Stage e = new Stage();
     VBox box = new VBox();
     GridPane buttonPane = new GridPane();
     box.setPadding(new Insets(15.0));
@@ -87,6 +104,11 @@ public class ConfirmationDialog extends DependantStage {
     return ref.confirmed;
   }
 
+  /**
+   * Determine if an instance of this window is already showing
+   * Helps prevent re-displaying windows like Find and Help
+   * @return true if the window is showing or false otherwise
+   */
   private boolean isAlreadyShowing() {
     boolean alreadyShowing = false;
     if (owner != null) {

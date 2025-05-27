@@ -3,7 +3,7 @@ package com.tom.jpedit.gui.dialog;
 import com.tom.jpedit.ApplicationContext;
 import com.tom.jpedit.gui.DependantStage;
 import com.tom.jpedit.gui.JPEditWindow;
-import com.tom.jpedit.gui.i18l.Strings;
+import com.tom.jpedit.gui.i18n.Strings;
 import com.tom.jpedit.util.LoadedJPPlugin;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;

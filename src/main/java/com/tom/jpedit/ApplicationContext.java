@@ -32,11 +32,20 @@ import java.util.stream.Collectors;
 
 import static java.lang.StackWalker.Option.RETAIN_CLASS_REFERENCE;
 
+/**
+ * Non-instantiable class for managing the context, state, and environment of the application
+ * This class provides many useful fields, lists, data, and methods
+ *
+ * Be sure to read the documentation carefully as the methods in this class can significantly alter the
+ * function of the application
+ */
 public class ApplicationContext {
     /* V E R S I O N */
-    public static final Version VERSION = new Version(4, 0, 0, "beta");
+    public static final Version VERSION = new Version(5, 0, 0, "beta");
     /* V E R S I O N */
+
     public static final String PLUGIN_LIST_FILE_NAME = "loaded-plugins.txt";
+
     private static final ApplicationContext context = new ApplicationContext();
     private final List<JPEditWindow> windows = new ArrayList<>();
     private final ObservableList<LoadedJPPlugin> loadedPlugins = FXCollections.observableArrayList();
@@ -54,10 +63,31 @@ public class ApplicationContext {
     private List<File> recentFiles = null;
     private static boolean terminating = false;
 
+    /**
+     * Returns a list of codes which represent the properties files available for langugage conversion
+     * @return a list of language codes corresponding to the files in the lang dir
+     */
+    public static List<String> getExistingLanguageCodes() {
+        var langFiles = List.of(Objects.requireNonNullElseGet(new File("lang").listFiles(), () -> new File[0]));
+        return langFiles.stream().map(file -> {
+
+            var name = file.getName();
+            name = name.substring(0, name.lastIndexOf('.'));
+            return name;
+        }).toList();
+    }
+
+    /**
+     * Tells when the application is terminating
+     * @return true when the application is terminating
+     */
     public boolean isTerminating() {
         return terminating;
     }
 
+    /**
+     * No instances
+     */
     private ApplicationContext() {
         loadProperties();
         loadPreferences();
@@ -101,7 +131,7 @@ public class ApplicationContext {
         // System.exit(0);
     }
 
-    public void loadPlugins() {
+    private void loadPlugins() {
         File pluginList = new File(PLUGIN_LIST_FILE_NAME);
         if (!pluginList.exists()) {
             try {
@@ -136,6 +166,14 @@ public class ApplicationContext {
         }
     }
 
+    /**
+     * Called as the first step in the chain to loading a plugin into the application.
+     * This should <b>not</b> be called by the plugins nor should it be called by other users.
+     * The program will call this method when it is ready to load the plugin
+     * @param jar the plugin jar file to load
+     * @param mainClassName the main class of the plugin – the one that implements JPEditPlugin
+     * @see JPEditPlugin
+     */
     public void loadPluginClass(@NotNull File jar, @NotNull String mainClassName) {
         ensureNotTerminating();
         try {
@@ -230,7 +268,7 @@ public class ApplicationContext {
         return String.join(".", "jpplugin", mainClassName.toLowerCase(Locale.ROOT), mainClassName);
     }
 
-    public void registerPlugin(File jar, JPEditPlugin pluginClass) throws IllegalAccessException {
+    private void registerPlugin(File jar, JPEditPlugin pluginClass) throws IllegalAccessException {
         checkCallerClass(new Class[]{getClass()}, "Do not call register plugin! Let the program take care of that");
         LoadedJPPlugin loadedJPPlugin = tryLoadPlugin(jar, pluginClass);
         if (loadedJPPlugin == null) {
@@ -318,14 +356,26 @@ public class ApplicationContext {
         }
     }
 
+    /**
+     * Gets the thread pool executor for the autosave thread
+     * @return the thread pool executor for autosave
+     */
     public ScheduledThreadPoolExecutor getExecutor() {
         return executor;
     }
 
+    /**
+     * Gets the instance of the user preferences Properties class
+     * @return return the user preferences properties
+     */
     public UserPreferences getUserPreferences() {
         return userPreferences;
     }
 
+    /**
+     * Create a duplicate of the JPEditWindow passed into the function
+     * @param window the window to be duplicated
+     */
     public void duplicateWindow(@NotNull JPEditWindow window) {
         ensureNotTerminating();
         JPEditWindow duplicate = window.duplicate(new JPEditWindow());
@@ -374,6 +424,23 @@ public class ApplicationContext {
         JPLogger.debug(JPLogger.getAppLog(), "Existing windows: " + existingWindows);
     }
 
+    /**
+     * Creates a new editor window in the application. This method initializes a new instance of
+     * {@code JPEditWindow}, registers it within the application context, assigns a unique title
+     * with a numeric identifier, and displays the window.
+     *
+     * The method begins by ensuring that the application is not in the process of terminating.
+     * If the application is terminating, an {@code IllegalStateException} is thrown. Subsequently,
+     * the method creates the new window, registers it in the application context for management,
+     * sets its title to "Untitled" followed by the total count of currently opened windows,
+     * and finally makes the window visible on the screen.
+     *
+     * This operation relies on the application context to manage the lifecycle and state of
+     * windows, ensuring that proper bookkeeping of the open windows is maintained.
+     *
+     * Throws:
+     * - {@code IllegalStateException} if the application is terminating.
+     */
     public void createNewWindow() {
         ensureNotTerminating();
         JPEditWindow newWindow = new JPEditWindow();
@@ -382,6 +449,13 @@ public class ApplicationContext {
         newWindow.show();
     }
 
+
+    /**
+     * Gets the total number of windows that have been created since application launch even if they have since closed
+     *
+     * This method can return a number larger than the number of open windows but never smaller than the number of open windows
+     * @return the number of total windows ever opened in this run
+     */
     public int getTotalWindowCount() {
         return totalWindowCount;
     }
@@ -412,6 +486,11 @@ public class ApplicationContext {
         }
     }
 
+    /**
+     * Called by the {@link com.tom.jpedit.handlers.file.CloseWindowActionHandler} when a window is closing
+     * Should not be invoked directly
+     * @param window the window that is closing
+     */
     public void unregisterWindow(JPEditWindow window) {
         windows.remove(window);
         existingWindows--;
@@ -425,6 +504,12 @@ public class ApplicationContext {
         }
     }
 
+    /**
+     * Called by the program once all windows have closed to finalize shutdown
+     *
+     * This method should <b>NOT</b> be called by plugins. To terminate the application
+     * at an arbitrary point use {@link ApplicationContext#terminateEarly()}
+     */
     public void teardown() {
         terminating = true;
         try {
@@ -450,7 +535,7 @@ public class ApplicationContext {
         }
     }
 
-    public void saveLoadedPlugins() {
+    private void saveLoadedPlugins() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(PLUGIN_LIST_FILE_NAME))) {
             for (LoadedJPPlugin plugin : loadedPlugins) {
                 var path = plugin.getLoadedJARFile().getAbsolutePath();
@@ -466,10 +551,14 @@ public class ApplicationContext {
         }
     }
 
-    public void savePreferences() throws IOException {
+    private void savePreferences() throws IOException {
         userPreferences.savePreferences();
     }
 
+    /**
+     * Provides a list of all the loaded plugins in the program. This list should not be modified
+     * @return the list of loaded plugins
+     */
     public List<LoadedJPPlugin> getLoadedPlugins() {
         return loadedPlugins;
     }
@@ -545,8 +634,12 @@ public class ApplicationContext {
         return properties;
     }
 
-    public List<JPEditWindow> getWindows() {
+    private List<JPEditWindow> getWindows() {
         return windows;
+    }
+
+    public List<JPEditWindow> getWindowsUnmodifiable() {
+        return Collections.unmodifiableList(windows);
     }
 
     public void unregisterPlugin(@NotNull LoadedJPPlugin plugin) {

@@ -36,7 +36,7 @@ public class ChangeAutoSaveTimeActionHandler extends ActionHandler {
         }
         ApplicationContext.getContext().getUserPreferences().setAutosavePeriodMillis(newTime * 1000);
         ApplicationContext.getContext()
-                          .getWindows()
+                          .getWindowsUnmodifiable()
                           .forEach(window -> window.getAutoSaveWorker().scheduleTask(newTime, TimeUnit.SECONDS));
         invalid = false;
         JPLogger.getAppLog()

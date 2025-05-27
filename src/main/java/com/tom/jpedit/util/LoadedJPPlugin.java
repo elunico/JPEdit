@@ -14,6 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class is an internal representation of a JPEditPlugin after it has been loaded by the program
+ * This class is specific to the function of the program and should not be interacted with by a particular
+ * plugin's implementation. For information on implementing a plugin see {@link JPEditPlugin}
+ */
 public class LoadedJPPlugin {
   private final JPEditPlugin mainClass;
   private final File loadedJARFile;

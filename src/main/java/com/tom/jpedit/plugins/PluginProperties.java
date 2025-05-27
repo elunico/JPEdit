@@ -4,6 +4,10 @@ import com.tom.jpedit.plugins.components.PluginKeyboardShortcut;
 import com.tom.jpedit.plugins.components.PluginMenuItem;
 import com.tom.jpedit.plugins.components.PluginToolbarButton;
 
+/**
+ * Class representing the user-interactable properties of a JPEdit Plugin
+ * See {@link JPEditPlugin#pluginProperties()} for more information
+ */
 public class PluginProperties {
   private PluginMenuItem menuItem;
   private PluginKeyboardShortcut keyboardShortcut;

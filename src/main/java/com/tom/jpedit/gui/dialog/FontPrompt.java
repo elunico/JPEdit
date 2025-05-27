@@ -5,7 +5,7 @@ import com.tom.jpedit.gui.DependantStage;
 import com.tom.jpedit.gui.JPEditWindow;
 import com.tom.jpedit.gui.components.CancelButton;
 import com.tom.jpedit.gui.components.OkButton;
-import com.tom.jpedit.gui.i18l.Strings;
+import com.tom.jpedit.gui.i18n.Strings;
 import com.tom.jpedit.util.FontStyleParser;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;

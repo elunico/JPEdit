@@ -2,7 +2,7 @@ package com.tom.jpedit.gui;
 
 import com.tom.jpedit.Action;
 import com.tom.jpedit.ApplicationContext;
-import com.tom.jpedit.gui.i18l.Strings;
+import com.tom.jpedit.gui.i18n.Strings;
 import com.tom.jpedit.gui.menu.*;
 import com.tom.jpedit.handlers.ActionHandler;
 import com.tom.jpedit.handlers.file.*;
@@ -284,6 +284,9 @@ public class JPEditWindow extends DependableStage {
 
   }
 
+  /**
+   * Display the saved file name in the title bar if it exists
+   */
   public void updateTitleForSave() {
     if (hasSaveFile()) {
       setTitle(isFullPathInTitle() ? getSaveFile().getAbsolutePath() : getSaveFile().getName());
@@ -455,6 +458,11 @@ public class JPEditWindow extends DependableStage {
     return dirtyProperty().get();
   }
 
+  /**
+   * Called by the {@link ApplicationContext} when a plugin is removed from the Window
+   * Should <b>not</b> be called manually by a plugin or related class.
+   * @param plugin the plugin being removed
+   */
   public void removePlugin(@NotNull LoadedJPPlugin plugin) {
     PluginToolbarButton button = plugin.getButton().get(this);
     if (button != null) {
@@ -483,6 +491,13 @@ public class JPEditWindow extends DependableStage {
     return buttonBox;
   }
 
+  /**
+   * Called by the {@link ApplicationContext} when a plugin is being loaded.
+   * Should <b>not</b> be called by the plugin or related classes
+   * @param properties the PluginProperties being loaded
+   * @param loadedJPPlugin the Plugin whose properties are being loaded
+   * @see PluginProperties
+   */
   public void addPluginProperties(
       @NotNull PluginProperties properties, @NotNull LoadedJPPlugin loadedJPPlugin
   ) {

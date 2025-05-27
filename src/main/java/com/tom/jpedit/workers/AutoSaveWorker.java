@@ -14,6 +14,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Class representing the repeating task of autosaving a document for a particular JPEdit Window
+ */
 public class AutoSaveWorker {
 
   private final JPEditWindow owner;

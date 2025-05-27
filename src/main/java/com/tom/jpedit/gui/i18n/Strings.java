@@ -1,4 +1,4 @@
-package com.tom.jpedit.gui.i18l;
+package com.tom.jpedit.gui.i18n;
 
 import com.tom.jpedit.logging.JPLogger;
 import org.jetbrains.annotations.NotNull;
@@ -7,6 +7,9 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Locale;
 
+/**
+ * Non-instantiable class for interacting with Internationalization (I18n)
+ */
 public final class Strings {
 
     public enum Content {
