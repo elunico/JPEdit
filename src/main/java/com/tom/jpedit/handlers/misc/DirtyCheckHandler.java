@@ -34,6 +34,7 @@ public class DirtyCheckHandler extends ActionHandler {
     JPLogger.getAppLog().info("Choice was " + choice);
 
     if (choice == ConfirmationType.CANCEL) {
+      event.consume();
       // abort closing
       return;
     }

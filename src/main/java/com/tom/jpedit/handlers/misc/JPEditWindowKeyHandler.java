@@ -5,9 +5,11 @@ import com.tom.jpedit.gui.JPEditWindow;
 import com.tom.jpedit.gui.dialog.FontPrompt;
 import com.tom.jpedit.handlers.ActionHandler;
 import com.tom.jpedit.handlers.edit.PasteActionHandler;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.WindowEvent;
 import org.jetbrains.annotations.NotNull;
 import tom.javafx.JavaFXUtilsKt;
 import tom.utils.os.OSUtilsKt;
@@ -34,6 +36,12 @@ public class JPEditWindowKeyHandler implements EventHandler<KeyEvent> {
       jpEditWindow.getTextArea().cut();
     } else if (JavaFXUtilsKt.isPasteEvent(event)) {
       new PasteActionHandler(jpEditWindow).handle(ActionHandler.asAction(event));
+    }
+    if (controlEquivalentModifierDown(event) && event.getCode() == KeyCode.W && !event.isShiftDown() && !event.isAltDown()) {
+      System.out.println("Fired cmd w");
+      Event.fireEvent(jpEditWindow, new WindowEvent(jpEditWindow, WindowEvent.WINDOW_CLOSE_REQUEST));
+      event.consume();
+      return ;
     }
     if (controlEquivalentModifierDown(event) && !event.isShiftDown()) {
       switch (event.getCode()) {
