@@ -19,8 +19,9 @@ import javafx.scene.layout.VBox;
 public class ChangeLocalePrompt extends DependantStage {
     public ChangeLocalePrompt(DependableStage owner) {
         super(owner);
+
         setTitle(Strings.Content.CHANGE_LOCAL_PROMPT_TITLE.text);
-            var title = new Label(Strings.Content.FILE_MENU_ITEM_OPEN.text);
+        var title = new Label(Strings.Content.FILE_MENU_ITEM_OPEN.text);
         title.setFont(FontUtil.getTitleLabelFont());
 
         var finePrint = new Label(Strings.Content.CHANGE_LOCAL_PROMPT_FINE_PRINT.text);
@@ -33,7 +34,9 @@ public class ChangeLocalePrompt extends DependantStage {
         choices.getSelectionModel().select(Strings.getLocale().getLanguage());
 
         var okButton = new OkButton(event -> {
-            ApplicationContext.getContext().getUserPreferences().setPreferredLocale(choices.getSelectionModel().getSelectedItem());
+            ApplicationContext.getContext()
+                              .getUserPreferences()
+                              .setPreferredLocale(choices.getSelectionModel().getSelectedItem());
             close();
             var w = new ConfirmationDialog(null, "Quit Program", "Ok to close?", "JPEdit needs to restart to display locale changes.\nDo you want to exit the program now?");
             var resp = w.showPrompt();

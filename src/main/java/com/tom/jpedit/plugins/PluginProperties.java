@@ -9,41 +9,41 @@ import com.tom.jpedit.plugins.components.PluginToolbarButton;
  * See {@link JPEditPlugin#pluginProperties()} for more information
  */
 public class PluginProperties {
-  private PluginMenuItem menuItem;
-  private PluginKeyboardShortcut keyboardShortcut;
-  private PluginToolbarButton toolbarButton;
+    private PluginMenuItem menuItem;
+    private PluginKeyboardShortcut keyboardShortcut;
+    private PluginToolbarButton toolbarButton;
 
-  public PluginProperties() {
-  }
+    public PluginProperties() {
+    }
 
-  public PluginProperties(PluginMenuItem menuItem) {
-    this.menuItem = menuItem;
-  }
+    public PluginProperties(PluginMenuItem menuItem) {
+        this.menuItem = menuItem;
+    }
 
-  public PluginProperties(PluginMenuItem menuItem, PluginKeyboardShortcut keyboardShortcut) {
-    this.menuItem = menuItem;
-    this.keyboardShortcut = keyboardShortcut;
-  }
+    public PluginProperties(PluginMenuItem menuItem, PluginKeyboardShortcut keyboardShortcut) {
+        this.menuItem = menuItem;
+        this.keyboardShortcut = keyboardShortcut;
+    }
 
-  public PluginProperties(
-      PluginMenuItem menuItem,
-      PluginKeyboardShortcut keyboardShortcut,
-      PluginToolbarButton toolbarButton
-  ) {
-    this.menuItem = menuItem;
-    this.keyboardShortcut = keyboardShortcut;
-    this.toolbarButton = toolbarButton;
-  }
+    public PluginProperties(
+            PluginMenuItem menuItem,
+            PluginKeyboardShortcut keyboardShortcut,
+            PluginToolbarButton toolbarButton
+    ) {
+        this.menuItem = menuItem;
+        this.keyboardShortcut = keyboardShortcut;
+        this.toolbarButton = toolbarButton;
+    }
 
-  public PluginMenuItem getMenuItem() {
-    return menuItem;
-  }
+    public PluginMenuItem getMenuItem() {
+        return menuItem;
+    }
 
-  public PluginKeyboardShortcut getKeyboardShortcut() {
-    return keyboardShortcut;
-  }
+    public PluginKeyboardShortcut getKeyboardShortcut() {
+        return keyboardShortcut;
+    }
 
-  public PluginToolbarButton getToolbarButton() {
-    return toolbarButton;
-  }
+    public PluginToolbarButton getToolbarButton() {
+        return toolbarButton;
+    }
 }

@@ -8,16 +8,16 @@ import java.io.File;
 
 
 public class OpenRecentActionHandler extends ActionHandler {
-  private final String fileName;
+    private final String fileName;
 
-  public OpenRecentActionHandler(JPEditWindow owner, String text) {
-    super(owner);
-    this.fileName = text;
-  }
+    public OpenRecentActionHandler(JPEditWindow owner, String text) {
+        super(owner);
+        this.fileName = text;
+    }
 
-  @Override
-  public void handle(ActionEvent event) {
-    OpenActionHandler handler = new OpenActionHandler(owner);
-    handler.openFile(new File(fileName));
-  }
+    @Override
+    public void handle(ActionEvent event) {
+        OpenActionHandler handler = new OpenActionHandler(owner);
+        handler.openFile(new File(fileName));
+    }
 }

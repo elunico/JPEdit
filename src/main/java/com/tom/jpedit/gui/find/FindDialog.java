@@ -16,45 +16,45 @@ import org.jetbrains.annotations.NotNull;
 
 public class FindDialog extends FindReplaceBase {
 
-  public FindDialog(@NotNull JPEditWindow owner) {
-    super.owner = owner;
-    super.setTitle(Strings.Content.FIND_DIALOG_FIND_TITLE.text);
-    GridPane root = new GridPane();
-    root.setHgap(5);
-    root.setVgap(5);
-    root.setPadding(new Insets(5));
-    Label findTextLabel = new Label(Strings.Content.FIND_DIALOG_FIND_LABEL.text );
-    findTextText = new TextField();
-    caseInsensitiveBox = new CheckBox(Strings.Content.FIND_DIALOG_IGNORE_CASE.text);
-    GridPane.setColumnSpan(caseInsensitiveBox, 2);
-    GridPane.setColumnSpan(findTextText, 2);
-    Button nextButton = new Button(Strings.Content.FIND_DIALOG_FIND_NEXT_BUTTON.text);
-    Button previousButton = new Button(Strings.Content.FIND_DIALOG_FIND_PREVIOUS_BUTTON.text);
+    public FindDialog(@NotNull JPEditWindow owner) {
+        super.owner = owner;
+        super.setTitle(Strings.Content.FIND_DIALOG_FIND_TITLE.text);
+        GridPane root = new GridPane();
+        root.setHgap(5);
+        root.setVgap(5);
+        root.setPadding(new Insets(5));
+        Label findTextLabel = new Label(Strings.Content.FIND_DIALOG_FIND_LABEL.text);
+        findTextText = new TextField();
+        caseInsensitiveBox = new CheckBox(Strings.Content.FIND_DIALOG_IGNORE_CASE.text);
+        GridPane.setColumnSpan(caseInsensitiveBox, 2);
+        GridPane.setColumnSpan(findTextText, 2);
+        Button nextButton = new Button(Strings.Content.FIND_DIALOG_FIND_NEXT_BUTTON.text);
+        Button previousButton = new Button(Strings.Content.FIND_DIALOG_FIND_PREVIOUS_BUTTON.text);
 
-    nextButton.setOnAction(new FindDialogNextActionHandler(owner, this));
-    previousButton.setOnAction(new FindDialogPreviousActionHandler(owner, this));
+        nextButton.setOnAction(new FindDialogNextActionHandler(owner, this));
+        previousButton.setOnAction(new FindDialogPreviousActionHandler(owner, this));
 
-    root.add(findTextLabel, 0, 0);
-    root.add(findTextText, 1, 0);
-    root.add(caseInsensitiveBox, 1, 1);
-    root.add(nextButton, 1, 2);
-    root.add(previousButton, 2, 2);
+        root.add(findTextLabel, 0, 0);
+        root.add(findTextText, 1, 0);
+        root.add(caseInsensitiveBox, 1, 1);
+        root.add(nextButton, 1, 2);
+        root.add(previousButton, 2, 2);
 
-    setScene(new Scene(root));
-    owner.registerDependent(this);
-    cache = new FindCache(0);
+        setScene(new Scene(root));
+        owner.registerDependent(this);
+        cache = new FindCache(0);
 
-  }
+    }
 
-  public FindCache getCache() {
-    return cache;
-  }
+    public FindCache getCache() {
+        return cache;
+    }
 
-  public TextField getFindTextText() {
-    return findTextText;
-  }
+    public TextField getFindTextText() {
+        return findTextText;
+    }
 
-  public CheckBox getCaseInsensitiveBox() {
-    return caseInsensitiveBox;
-  }
+    public CheckBox getCaseInsensitiveBox() {
+        return caseInsensitiveBox;
+    }
 }

@@ -7,23 +7,23 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 
 public abstract class FindReplaceBase extends DependantStage {
-  protected TextField findTextText;
-  protected FindCache cache;
-  protected CheckBox caseInsensitiveBox;
-  protected DependableStage owner;
+    protected TextField findTextText;
+    protected FindCache cache;
+    protected CheckBox caseInsensitiveBox;
+    protected DependableStage owner;
 
-  public FindReplaceBase() {
-  }
+    public FindReplaceBase() {
+    }
 
-  public TextField getFindTextText() {
-    return findTextText;
-  }
+    public TextField getFindTextText() {
+        return findTextText;
+    }
 
-  public FindCache getCache() {
-    return cache;
-  }
+    public FindCache getCache() {
+        return cache;
+    }
 
-  public CheckBox getCaseInsensitiveBox() {
-    return caseInsensitiveBox;
-  }
+    public CheckBox getCaseInsensitiveBox() {
+        return caseInsensitiveBox;
+    }
 }

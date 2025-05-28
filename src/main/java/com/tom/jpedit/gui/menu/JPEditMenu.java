@@ -4,10 +4,10 @@ import com.tom.jpedit.gui.JPEditWindow;
 import javafx.scene.control.Menu;
 
 public abstract class JPEditMenu extends Menu {
-  private final JPEditWindow owner;
+    private final JPEditWindow owner;
 
-  public JPEditMenu(JPEditWindow owner, String s) {
-    super(s);
-    this.owner = owner;
-  }
+    public JPEditMenu(JPEditWindow owner, String s) {
+        super(s);
+        this.owner = owner;
+    }
 }

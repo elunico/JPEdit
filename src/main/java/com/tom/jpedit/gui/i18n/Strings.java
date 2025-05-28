@@ -2,16 +2,24 @@ package com.tom.jpedit.gui.i18n;
 
 import com.tom.jpedit.logging.JPLogger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
- * Non-instantiable class for interacting with Internationalization (I18n)
+ * Non-instantiable class for interacting with Internationalization (I18n). The class is used to load strings from a
+ * .properties file containing the strings for a language (found in the lang folder)
  */
 public final class Strings {
 
+    /**
+     * Contains the constants which represent the keys in the .properties file.
+     * The enum constants have a field called text which is the string content found in the .properties file.
+     * These constants can be used directly in the code with the text field in the UI
+     */
     public enum Content {
 
         HELP_ITEM,
@@ -105,27 +113,43 @@ public final class Strings {
 
     public static Locale locale = Locale.getDefault();
 
+    /**
+     * Returns the preferred locale of the user. It is the same as {@link Locale#getDefault()} unless the user has
+     * chosen a specific preferred locale in the settings menu.
+     *
+     * @return the user's preferred locale, or the default locale if none has been set.
+     */
     public static Locale getLocale() {
         return locale;
     }
 
-    // no instances
-    private Strings() {
-    }
-
-    public static void loadStrings(Locale locale) {
-        Strings.locale = locale;
-        var fileStrings = getFileStrings(locale);
+    /**
+     * Load the strings for a given locale from the lang folder. The string values are set as the text field of the
+     * enum constant whose name matches the key in the .properties file.
+     *
+     * @param locale the locale file to load strings from. If null, the default locale is used.
+     */
+    public static void loadStrings(@Nullable Locale locale) {
+        Strings.locale = Objects.requireNonNullElse(locale, Locale.getDefault());
+        var fileStrings = getFileStrings(Strings.locale);
         for (var entry : fileStrings.entrySet()) {
             Content content = entry.getKey();
             content.text = entry.getValue();
         }
     }
 
+    /**
+     * Returns a HashMap containing the strings for a given locale. The key is the enum constant whose name matches the
+     * key in the .properties file, and the value is the string content found in the .properties file.
+     *
+     * @param locale the locale file to load strings from
+     * @return a HashMap containing the strings for a given locale
+     */
     public static @NotNull HashMap<Content, String> getFileStrings(@NotNull Locale locale) {
         var strings = new HashMap<Content, String>();
         File fileName = new File("lang/" + locale.getLanguage() + ".properties");
-        JPLogger.getAppLog().info("Loading language strings for " + locale.getLanguage() + " from " + fileName.getAbsolutePath());
+        JPLogger.getAppLog()
+                .info("Loading language strings for " + locale.getLanguage() + " from " + fileName.getAbsolutePath());
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String s;
             while ((s = reader.readLine()) != null) {
@@ -158,6 +182,12 @@ public final class Strings {
         return strings;
     }
 
+    /**
+     * Create a blank .properties file for a given locale. The file is created at the path given.
+     *
+     * @param path the path to create the file at
+     * @throws IOException if the file cannot be created for any reason
+     */
     public static void createTemplate(@NotNull File path) throws IOException {
         boolean _ = path.createNewFile();
         try (PrintWriter writer = new PrintWriter(new FileWriter(path))) {
@@ -165,6 +195,10 @@ public final class Strings {
                 writer.println(content.name() + "=");
             }
         }
+    }
+
+    // no instances
+    private Strings() {
     }
 
 }

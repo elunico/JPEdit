@@ -12,12 +12,12 @@ import javafx.event.ActionEvent;
  */
 public class NewActionHandler extends ActionHandler {
 
-  public NewActionHandler(JPEditWindow jpEditWindow) {
-    super(jpEditWindow);
-  }
+    public NewActionHandler(JPEditWindow jpEditWindow) {
+        super(jpEditWindow);
+    }
 
-  @Override
-  public void handle(ActionEvent event) {
-    new DirtyCheckHandler(owner, owner::newFile).handle(event);
-  }
+    @Override
+    public void handle(ActionEvent event) {
+        new DirtyCheckHandler(owner, owner::newFile).handle(event);
+    }
 }

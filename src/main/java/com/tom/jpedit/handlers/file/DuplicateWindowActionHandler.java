@@ -6,12 +6,12 @@ import com.tom.jpedit.handlers.ActionHandler;
 import javafx.event.ActionEvent;
 
 public class DuplicateWindowActionHandler extends ActionHandler {
-  public DuplicateWindowActionHandler(JPEditWindow owner) {
-    super(owner);
-  }
+    public DuplicateWindowActionHandler(JPEditWindow owner) {
+        super(owner);
+    }
 
-  @Override
-  public void handle(ActionEvent event) {
-    ApplicationContext.getContext().duplicateWindow(owner);
-  }
+    @Override
+    public void handle(ActionEvent event) {
+        ApplicationContext.getContext().duplicateWindow(owner);
+    }
 }

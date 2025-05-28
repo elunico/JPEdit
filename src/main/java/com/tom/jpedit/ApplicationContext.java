@@ -35,7 +35,7 @@ import static java.lang.StackWalker.Option.RETAIN_CLASS_REFERENCE;
 /**
  * Non-instantiable class for managing the context, state, and environment of the application
  * This class provides many useful fields, lists, data, and methods
- *
+ * <p>
  * Be sure to read the documentation carefully as the methods in this class can significantly alter the
  * function of the application
  */
@@ -47,24 +47,11 @@ public class ApplicationContext {
     public static final String PLUGIN_LIST_FILE_NAME = "loaded-plugins.txt";
 
     private static final ApplicationContext context = new ApplicationContext();
-    private final List<JPEditWindow> windows = new ArrayList<>();
-    private final ObservableList<LoadedJPPlugin> loadedPlugins = FXCollections.observableArrayList();
-    private final ThreadGroup autoSaveWorkersThreadGroup = new ThreadGroup(
-            Thread.currentThread()
-                    .getThreadGroup(),
-            "Auto Save Workers Thread"
-    );
-    private final Properties properties = new Properties();
-    private final UserPreferences userPreferences = new UserPreferences();
-    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(8);
-    private int existingWindows = 0;
-    private int windowIdGen = 0;
-    private int totalWindowCount = 0;
-    private List<File> recentFiles = null;
     private static boolean terminating = false;
 
     /**
      * Returns a list of codes which represent the properties files available for langugage conversion
+     *
      * @return a list of language codes corresponding to the files in the lang dir
      */
     public static List<String> getExistingLanguageCodes() {
@@ -78,40 +65,24 @@ public class ApplicationContext {
     }
 
     /**
-     * Tells when the application is terminating
-     * @return true when the application is terminating
-     */
-    public boolean isTerminating() {
-        return terminating;
-    }
-
-    /**
-     * No instances
-     */
-    private ApplicationContext() {
-        loadProperties();
-        loadPreferences();
-        loadPlugins();
-        executor.setRemoveOnCancelPolicy(true);
-    }
-
-    /**
      * Terminates the application early by simulating window close events for all open windows
      * and performing the necessary cleanup without immediately triggering system exit.
      * It is an early termination because it can be called to stop the application before
      * the normal termination time which occurs when all windows are closed.
-     *
+     * <p>
      * This method retrieves all currently open application windows, creates and fires
      * window close request events for each of them, and then invokes the teardown process
      * in the application's context to release resources. The explicit invocation of
      * `System.exit(0)` is intentionally avoided, allowing for additional termination
      * handling through hooks or other mechanisms if needed.
-     *
+     * <p>
      * The method is static and operates at the application level, ensuring a controlled
      * and unified shutdown sequence across all managed components of the application.
      */
     public static void terminateEarly() {
-        if (terminating) {return;}
+        if (terminating) {
+            return;
+        }
         terminating = true;
         var size = context.getWindows().size();
         var events = new Event[size];
@@ -129,6 +100,76 @@ public class ApplicationContext {
         context.teardown();
         // System exit should happen naturally to allow hooking into the termination process
         // System.exit(0);
+    }
+
+    private static void checkCallerClass(Class<?>[] validCallers, String msg) throws IllegalAccessException {
+        checkCallerClass(validCallers, msg, false);
+    }
+
+    private static void checkCallerClass(Class<?>[] validCallers, String msg, boolean strict)
+            throws IllegalAccessException {
+        Class<?> callerClass;
+        try {
+            callerClass = Objects.requireNonNull(StackWalker.getInstance(RETAIN_CLASS_REFERENCE).getCallerClass());
+        } catch (IllegalCallerException | NullPointerException e) {
+            if (strict) {
+                JPLogger.getAppLog().severe("Could not check caller class. Strict mode prevents all access.");
+                throw new IllegalAccessException(msg);
+            } else {
+                JPLogger.getAppLog().severe("Could not check caller class. All classes are allowed.");
+                return;
+            }
+        }
+
+        JPLogger.debug(JPLogger.getAppLog(), "Check caller class: Called by " + callerClass.getName());
+        if (!Arrays.asList(validCallers).contains(callerClass)) {
+            throw new IllegalAccessException(msg);
+        }
+    }
+
+    @com.tom.jpedit.util.Deprecated(value = "Plugins should no longer access ApplicationContext indiscriminately. Transition to using JPPluginAPI", since = "4.0.0", forRemoval = true, forPackage = "jpplugin.*", replaceWith = "JPPluginAPI")
+    public static ApplicationContext getContext() {
+        return context;
+    }
+
+    @NotNull
+    public static Collection<? extends MenuItem> emptyRecents() {
+        MenuItem item = new MenuItem("NO ITEMS");
+        item.setDisable(true);
+        return List.of(item);
+    }
+    private final List<JPEditWindow> windows = new ArrayList<>();
+    private final ObservableList<LoadedJPPlugin> loadedPlugins = FXCollections.observableArrayList();
+    private final ThreadGroup autoSaveWorkersThreadGroup = new ThreadGroup(
+            Thread.currentThread()
+                  .getThreadGroup(),
+            "Auto Save Workers Thread"
+    );
+    private final Properties properties = new Properties();
+    private final UserPreferences userPreferences = new UserPreferences();
+    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(8);
+    private int existingWindows = 0;
+    private int windowIdGen = 0;
+    private int totalWindowCount = 0;
+    private List<File> recentFiles = null;
+
+    /**
+     * No instances
+     */
+    private ApplicationContext() {
+        loadProperties();
+        loadPreferences();
+        loadPlugins();
+        executor.setRemoveOnCancelPolicy(true);
+    }
+
+    /**
+     * Tells when the application is terminating
+     *
+     * @return true when the application is terminating
+     */
+    public boolean isTerminating() {
+        return terminating;
     }
 
     private void loadPlugins() {
@@ -170,7 +211,8 @@ public class ApplicationContext {
      * Called as the first step in the chain to loading a plugin into the application.
      * This should <b>not</b> be called by the plugins nor should it be called by other users.
      * The program will call this method when it is ready to load the plugin
-     * @param jar the plugin jar file to load
+     *
+     * @param jar           the plugin jar file to load
      * @param mainClassName the main class of the plugin – the one that implements JPEditPlugin
      * @see JPEditPlugin
      */
@@ -178,11 +220,11 @@ public class ApplicationContext {
         ensureNotTerminating();
         try {
             checkCallerClass(
-                    new Class[]{ApplicationContext.class, AddPluginActionHandler.class},
+                    new Class[]{ ApplicationContext.class, AddPluginActionHandler.class },
                     "Do not call loadPluginClass! The program will call it when you load the plugin in the GUI"
             );
             ClassLoader loader = ApplicationContext.class.getClassLoader();
-            URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{jar.toURI().toURL()}, loader);
+            URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{ jar.toURI().toURL() }, loader);
             String qualifiedName = qualifyPluginMainClassName(mainClassName);
             Class<?> aClass = Class.forName(qualifiedName, true, urlClassLoader);
             Class<JPEditPlugin> mainClass = (Class<JPEditPlugin>) aClass;
@@ -239,37 +281,13 @@ public class ApplicationContext {
         }
     }
 
-    private static void checkCallerClass(Class<?>[] validCallers, String msg) throws IllegalAccessException {
-        checkCallerClass(validCallers, msg, false);
-    }
-
-    private static void checkCallerClass(Class<?>[] validCallers, String msg, boolean strict) throws IllegalAccessException {
-        Class<?> callerClass;
-        try {
-            callerClass = Objects.requireNonNull(StackWalker.getInstance(RETAIN_CLASS_REFERENCE).getCallerClass());
-        } catch (IllegalCallerException | NullPointerException e) {
-            if (strict) {
-                JPLogger.getAppLog().severe("Could not check caller class. Strict mode prevents all access.");
-                throw new IllegalAccessException(msg);
-            } else {
-                JPLogger.getAppLog().severe("Could not check caller class. All classes are allowed.");
-                return;
-            }
-        }
-
-        JPLogger.debug(JPLogger.getAppLog(), "Check caller class: Called by " + callerClass.getName());
-        if (!Arrays.asList(validCallers).contains(callerClass)) {
-            throw new IllegalAccessException(msg);
-        }
-    }
-
     @Contract("_ -> new")
     private @NotNull String qualifyPluginMainClassName(String mainClassName) {
         return String.join(".", "jpplugin", mainClassName.toLowerCase(Locale.ROOT), mainClassName);
     }
 
     private void registerPlugin(File jar, JPEditPlugin pluginClass) throws IllegalAccessException {
-        checkCallerClass(new Class[]{getClass()}, "Do not call register plugin! Let the program take care of that");
+        checkCallerClass(new Class[]{ getClass() }, "Do not call register plugin! Let the program take care of that");
         LoadedJPPlugin loadedJPPlugin = tryLoadPlugin(jar, pluginClass);
         if (loadedJPPlugin == null) {
             return;
@@ -358,6 +376,7 @@ public class ApplicationContext {
 
     /**
      * Gets the thread pool executor for the autosave thread
+     *
      * @return the thread pool executor for autosave
      */
     public ScheduledThreadPoolExecutor getExecutor() {
@@ -366,6 +385,7 @@ public class ApplicationContext {
 
     /**
      * Gets the instance of the user preferences Properties class
+     *
      * @return return the user preferences properties
      */
     public UserPreferences getUserPreferences() {
@@ -374,6 +394,7 @@ public class ApplicationContext {
 
     /**
      * Create a duplicate of the JPEditWindow passed into the function
+     *
      * @param window the window to be duplicated
      */
     public void duplicateWindow(@NotNull JPEditWindow window) {
@@ -387,14 +408,9 @@ public class ApplicationContext {
         duplicate.show();
     }
 
-    @com.tom.jpedit.util.Deprecated(value = "Plugins should no longer access ApplicationContext indiscriminately. Transition to using JPPluginAPI", since = "4.0.0", forRemoval = true, forPackage = "jpplugin.*", replaceWith = "JPPluginAPI")
-    public static ApplicationContext getContext() {
-        return context;
-    }
-
     void registerWindow(@NotNull JPEditWindow window) {
         try {
-            Class<?>[] callers = {ApplicationContext.class, Driver.class};
+            Class<?>[] callers = { ApplicationContext.class, Driver.class };
             String msg = "Do not call register window! To create a new window, " + "create a NewWindowActionHandler and call void handle()";
             checkCallerClass(callers, msg);
         } catch (IllegalAccessException e) {
@@ -412,7 +428,7 @@ public class ApplicationContext {
             } catch (Exception e) {
                 throw new RuntimeException(
                         "The plugin " + plugin.getClass()
-                                .getCanonicalName() + " caused in error during construction of a new window.",
+                                              .getCanonicalName() + " caused in error during construction of a new window.",
                         e
                 );
             }
@@ -428,16 +444,16 @@ public class ApplicationContext {
      * Creates a new editor window in the application. This method initializes a new instance of
      * {@code JPEditWindow}, registers it within the application context, assigns a unique title
      * with a numeric identifier, and displays the window.
-     *
+     * <p>
      * The method begins by ensuring that the application is not in the process of terminating.
      * If the application is terminating, an {@code IllegalStateException} is thrown. Subsequently,
      * the method creates the new window, registers it in the application context for management,
      * sets its title to "Untitled" followed by the total count of currently opened windows,
      * and finally makes the window visible on the screen.
-     *
+     * <p>
      * This operation relies on the application context to manage the lifecycle and state of
      * windows, ensuring that proper bookkeeping of the open windows is maintained.
-     *
+     * <p>
      * Throws:
      * - {@code IllegalStateException} if the application is terminating.
      */
@@ -449,11 +465,11 @@ public class ApplicationContext {
         newWindow.show();
     }
 
-
     /**
      * Gets the total number of windows that have been created since application launch even if they have since closed
-     *
+     * <p>
      * This method can return a number larger than the number of open windows but never smaller than the number of open windows
+     *
      * @return the number of total windows ever opened in this run
      */
     public int getTotalWindowCount() {
@@ -489,6 +505,7 @@ public class ApplicationContext {
     /**
      * Called by the {@link com.tom.jpedit.handlers.file.CloseWindowActionHandler} when a window is closing
      * Should not be invoked directly
+     *
      * @param window the window that is closing
      */
     public void unregisterWindow(JPEditWindow window) {
@@ -506,7 +523,7 @@ public class ApplicationContext {
 
     /**
      * Called by the program once all windows have closed to finalize shutdown
-     *
+     * <p>
      * This method should <b>NOT</b> be called by plugins. To terminate the application
      * at an arbitrary point use {@link ApplicationContext#terminateEarly()}
      */
@@ -557,6 +574,7 @@ public class ApplicationContext {
 
     /**
      * Provides a list of all the loaded plugins in the program. This list should not be modified
+     *
      * @return the list of loaded plugins
      */
     public List<LoadedJPPlugin> getLoadedPlugins() {
@@ -572,23 +590,16 @@ public class ApplicationContext {
             }
         }
         List<MenuItem> items = recentFiles().stream()
-                .map(File::getAbsolutePath)
-                .map(MenuItem::new)
-                .peek(item -> addRecentItemHandler(window, item))
-                .collect(Collectors.toList());
+                                            .map(File::getAbsolutePath)
+                                            .map(MenuItem::new)
+                                            .peek(item -> addRecentItemHandler(window, item))
+                                            .collect(Collectors.toList());
 
         return items.isEmpty() ? ApplicationContext.emptyRecents() : items;
     }
 
     private void addRecentItemHandler(JPEditWindow window, @NotNull MenuItem item) {
         item.setOnAction(new OpenRecentActionHandler(window, item.getText()));
-    }
-
-    @NotNull
-    public static Collection<? extends MenuItem> emptyRecents() {
-        MenuItem item = new MenuItem("NO ITEMS");
-        item.setDisable(true);
-        return List.of(item);
     }
 
     public List<File> recentFiles() {

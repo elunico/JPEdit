@@ -20,36 +20,36 @@ import java.io.IOException;
 public class SaveAsActionHandler extends ActionHandler {
 
 
-  public SaveAsActionHandler(JPEditWindow owner) {
-    super(owner);
-  }
-
-  public File getFileFromUser(ActionEvent event) {
-    FileChooser chooser = new FileChooser();
-    chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-    return chooser.showSaveDialog(owner);
-  }
-
-  @Override
-  public void handle(ActionEvent event) {
-    File saveFile = getFileFromUser(event);
-    if (saveFile == null) {
-      JavaFXUtilsKt.popupAlert("No file chosen. File NOT saved", "NOT SAVED");
-      return;
+    public SaveAsActionHandler(JPEditWindow owner) {
+        super(owner);
     }
-    saveAs(saveFile);
-  }
 
-  boolean saveAs(@NotNull File saveFile) {
-    String text = owner.getTextArea().getText();
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile))) {
-      writer.write(text);
-      owner.setSaveFile(saveFile);
-      owner.updateTitleForSave();
-      owner.saveUpdated();
-      return true;
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    public File getFileFromUser(ActionEvent event) {
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        return chooser.showSaveDialog(owner);
     }
-  }
+
+    @Override
+    public void handle(ActionEvent event) {
+        File saveFile = getFileFromUser(event);
+        if (saveFile == null) {
+            JavaFXUtilsKt.popupAlert("No file chosen. File NOT saved", "NOT SAVED");
+            return;
+        }
+        saveAs(saveFile);
+    }
+
+    boolean saveAs(@NotNull File saveFile) {
+        String text = owner.getTextArea().getText();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile))) {
+            writer.write(text);
+            owner.setSaveFile(saveFile);
+            owner.updateTitleForSave();
+            owner.saveUpdated();
+            return true;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -12,12 +12,12 @@ import javafx.event.ActionEvent;
  */
 public class NewWindowActionHandler extends ActionHandler {
 
-  public NewWindowActionHandler(JPEditWindow jpEditWindow) {
-    super(jpEditWindow);
-  }
+    public NewWindowActionHandler(JPEditWindow jpEditWindow) {
+        super(jpEditWindow);
+    }
 
-  @Override
-  public void handle(ActionEvent event) {
-    ApplicationContext.getContext().createNewWindow();
-  }
+    @Override
+    public void handle(ActionEvent event) {
+        ApplicationContext.getContext().createNewWindow();
+    }
 }

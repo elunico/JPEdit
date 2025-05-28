@@ -4,7 +4,6 @@ import com.tom.jpedit.gui.JPEditWindow;
 import com.tom.jpedit.gui.dialog.ChangeLocalePrompt;
 import com.tom.jpedit.handlers.ActionHandler;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 
 public class ChangeLocaleHandler extends ActionHandler {
     public ChangeLocaleHandler(JPEditWindow owner) {

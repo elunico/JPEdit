@@ -8,20 +8,20 @@ import javafx.scene.control.IndexRange;
 import org.jetbrains.annotations.NotNull;
 
 public class ReplaceItemHandler extends ActionHandler {
-  private final ReplaceDialog replaceDialog;
+    private final ReplaceDialog replaceDialog;
 
-  public ReplaceItemHandler(@NotNull JPEditWindow owner, ReplaceDialog replaceDialog) {
-    super(owner);
-    this.replaceDialog = replaceDialog;
-  }
-
-  @Override
-  public void handle(ActionEvent event) {
-    IndexRange selection = owner.getTextArea().getSelection();
-    String replacement = replaceDialog.getReplaceTextText().getText();
-    if (selection != null && selection.getLength() != 0) {
-      owner.getTextArea().replaceText(selection, replacement);
+    public ReplaceItemHandler(@NotNull JPEditWindow owner, ReplaceDialog replaceDialog) {
+        super(owner);
+        this.replaceDialog = replaceDialog;
     }
-    replaceDialog.getNextButton().fire();
-  }
+
+    @Override
+    public void handle(ActionEvent event) {
+        IndexRange selection = owner.getTextArea().getSelection();
+        String replacement = replaceDialog.getReplaceTextText().getText();
+        if (selection != null && selection.getLength() != 0) {
+            owner.getTextArea().replaceText(selection, replacement);
+        }
+        replaceDialog.getNextButton().fire();
+    }
 }

@@ -16,7 +16,9 @@ public class AddInternationalStringsHandler extends ActionHandler {
         var loc = new InternationalLanguageSelector(owner);
         loc.showAndWait();
         var code = loc.getLanguageCode();
-        if (code == null) return;
+        if (code == null) {
+            return;
+        }
         new InternationalStringEditorWindow(owner, code).show();
     }
 }

@@ -7,7 +7,10 @@ import com.tom.jpedit.gui.i18n.Strings;
 import com.tom.jpedit.logging.JPLogger;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -22,6 +25,19 @@ import java.util.Map;
 
 public class InternationalStringEditorWindow extends DependantStage {
 
+
+    private static void writeI18nStrings(File filePath, HashMap<String, String> map) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (var entry : map.entrySet()) {
+                String line = entry.getKey() + "=" + entry.getValue();
+                writer.write(line);
+                writer.newLine(); // Add a new line character
+            }
+            JPLogger.getAppLog().info("Strings written to file: " + filePath.getAbsolutePath());
+        } catch (IOException e) {
+            JPLogger.getErrLog().severe("An error occurred: " + e.getMessage());
+        }
+    }
 
     public InternationalStringEditorWindow(JPEditWindow owner, String code) {
         super(owner);
@@ -65,19 +81,6 @@ public class InternationalStringEditorWindow extends DependantStage {
         setScene(new Scene(new ScrollPane(root)));
         setWidth(1000);
         setHeight(700);
-    }
-
-    private static void writeI18nStrings(File filePath, HashMap<String, String> map) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            for (var entry: map.entrySet()) {
-                String line = entry.getKey() + "=" + entry.getValue();
-                writer.write(line);
-                writer.newLine(); // Add a new line character
-            }
-            JPLogger.getAppLog().info("Strings written to file: " + filePath.getAbsolutePath());
-        } catch (IOException e) {
-            JPLogger.getErrLog().severe("An error occurred: " + e.getMessage());
-        }
     }
 
     private void populateI18nStrings(Map<Strings.Content, String> strings, VBox stringBox) {

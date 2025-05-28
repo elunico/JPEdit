@@ -21,10 +21,6 @@ public class InternationalLanguageSelector extends DependantStage {
 
     private String languageCode = null;
 
-    public String getLanguageCode() {
-        return languageCode;
-    }
-
     public InternationalLanguageSelector(JPEditWindow owner) {
         super(owner);
 
@@ -68,5 +64,9 @@ public class InternationalLanguageSelector extends DependantStage {
         root.setPadding(new Insets(5));
 
         setScene(new Scene(root));
+    }
+
+    public String getLanguageCode() {
+        return languageCode;
     }
 }

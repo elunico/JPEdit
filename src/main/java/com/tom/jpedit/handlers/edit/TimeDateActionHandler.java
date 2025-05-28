@@ -12,22 +12,22 @@ import java.util.Locale;
 import java.util.Optional;
 
 public class TimeDateActionHandler extends ActionHandler {
-  public TimeDateActionHandler(JPEditWindow owner) {
-    super(owner);
-  }
-
-  @Override
-  public void handle(ActionEvent event) {
-    TimeDatePrompt prompt = new TimeDatePrompt(owner);
-
-    Optional<String> format = prompt.prompt();
-
-    if (format.isPresent()) {
-      String s = format.get();
-      TextArea textArea = owner.getTextArea();
-      DateTimeFormatter formatPattern = DateTimeFormatter.ofPattern(s, Locale.getDefault());
-      String time = LocalDateTime.now().format(formatPattern);
-      textArea.insertText(textArea.getCaretPosition(), time);
+    public TimeDateActionHandler(JPEditWindow owner) {
+        super(owner);
     }
-  }
+
+    @Override
+    public void handle(ActionEvent event) {
+        TimeDatePrompt prompt = new TimeDatePrompt(owner);
+
+        Optional<String> format = prompt.prompt();
+
+        if (format.isPresent()) {
+            String s = format.get();
+            TextArea textArea = owner.getTextArea();
+            DateTimeFormatter formatPattern = DateTimeFormatter.ofPattern(s, Locale.getDefault());
+            String time = LocalDateTime.now().format(formatPattern);
+            textArea.insertText(textArea.getCaretPosition(), time);
+        }
+    }
 }

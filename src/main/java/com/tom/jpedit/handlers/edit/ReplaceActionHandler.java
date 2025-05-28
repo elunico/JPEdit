@@ -6,14 +6,14 @@ import com.tom.jpedit.handlers.ActionHandler;
 import javafx.event.ActionEvent;
 
 public class ReplaceActionHandler extends ActionHandler {
-  public ReplaceActionHandler(JPEditWindow jpEditWindow) {
-    super(jpEditWindow);
-  }
+    public ReplaceActionHandler(JPEditWindow jpEditWindow) {
+        super(jpEditWindow);
+    }
 
-  @Override
-  public void handle(ActionEvent event) {
-    // TODO: this
-    ReplaceDialog dialog = new ReplaceDialog(this.owner);
-    dialog.show();
-  }
+    @Override
+    public void handle(ActionEvent event) {
+        // TODO: this
+        ReplaceDialog dialog = new ReplaceDialog(this.owner);
+        dialog.show();
+    }
 }

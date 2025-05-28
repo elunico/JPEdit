@@ -1,14 +1,14 @@
 package com.tom.jpedit.util;
 
 public @interface Deprecated {
-  String forPackage() default "";
+    String forPackage() default "";
 
-  String value() default "";
+    String value() default "";
 
-  String since() default "";
+    String since() default "";
 
-  boolean forRemoval() default false;
+    boolean forRemoval() default false;
 
-  String replaceWith() default "";
+    String replaceWith() default "";
 
 }

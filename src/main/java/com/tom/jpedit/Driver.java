@@ -24,11 +24,19 @@ import java.util.stream.Collectors;
  */
 public class Driver extends Application {
 
-    private final ApplicationContext context = ApplicationContext.getContext();
-
     public static void main(String[] args) {
         launch(args);
     }
+
+    private static ConfirmationType promptForRecovery() {
+        return new ConfirmationDialog(
+                null,
+                "Recover test?",
+                "Temporary files found",
+                "It looks like JPEdit may have crashed, but there is some recoverable text. \nWould you like to recover the text now? \n(Answering no or failing to save the recovered\nfiles will destroy them forever)"
+        ).showPrompt();
+    }
+    private final ApplicationContext context = ApplicationContext.getContext();
 
     @Override
     public void start(Stage primaryStage) {
@@ -65,16 +73,6 @@ public class Driver extends Application {
             throw e;
         }
     }
-
-    private static ConfirmationType promptForRecovery() {
-        return new ConfirmationDialog(
-                null,
-                "Recover test?",
-                "Temporary files found",
-                "It looks like JPEdit may have crashed, but there is some recoverable text. \nWould you like to recover the text now? \n(Answering no or failing to save the recovered\nfiles will destroy them forever)"
-        ).showPrompt();
-    }
-
 
     private void recoverAllTempFiles(@NotNull File[] contents) {
         for (File tf : contents) {

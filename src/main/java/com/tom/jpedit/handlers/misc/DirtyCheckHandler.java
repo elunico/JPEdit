@@ -9,42 +9,42 @@ import com.tom.jpedit.logging.JPLogger;
 import javafx.event.ActionEvent;
 
 public class DirtyCheckHandler extends ActionHandler {
-  private final Runnable next;
+    private final Runnable next;
 
-  public DirtyCheckHandler(JPEditWindow owner, Runnable nextSteps) {
-    super(owner);
-    this.next = nextSteps;
-  }
-
-  @Override
-  public void handle(ActionEvent event) {
-    JPLogger.debug(JPLogger.getAppLog(), "dirty = " + owner.isDirty());
-    if (!owner.isDirty()) {
-      next.run();
-      return;
+    public DirtyCheckHandler(JPEditWindow owner, Runnable nextSteps) {
+        super(owner);
+        this.next = nextSteps;
     }
 
-    ConfirmationDialog dialog = new ConfirmationDialog(
-        owner,
-        "Save Changes?",
-        "File modified",
-        "The file has been modified since saving. Do you want to save? Answering 'no' will DESTROY changes."
-    );
-    ConfirmationType choice = dialog.showPrompt();
-    JPLogger.getAppLog().info("Choice was " + choice);
+    @Override
+    public void handle(ActionEvent event) {
+        JPLogger.debug(JPLogger.getAppLog(), "dirty = " + owner.isDirty());
+        if (!owner.isDirty()) {
+            next.run();
+            return;
+        }
 
-    if (choice == ConfirmationType.CANCEL) {
-      event.consume();
-      // abort closing
-      return;
+        ConfirmationDialog dialog = new ConfirmationDialog(
+                owner,
+                "Save Changes?",
+                "File modified",
+                "The file has been modified since saving. Do you want to save? Answering 'no' will DESTROY changes."
+        );
+        ConfirmationType choice = dialog.showPrompt();
+        JPLogger.getAppLog().info("Choice was " + choice);
+
+        if (choice == ConfirmationType.CANCEL) {
+            // abort closing
+            event.consume();
+            return;
+        }
+
+        if (choice == ConfirmationType.YES) {
+            SaveActionHandler handler = new SaveActionHandler(owner);
+            handler.handle(event);
+        }
+
+        // continue closing the window
+        next.run();
     }
-
-    if (choice == ConfirmationType.YES) {
-      SaveActionHandler handler = new SaveActionHandler(owner);
-      handler.handle(event);
-    }
-
-    // continue closing the window
-    next.run();
-  }
 }

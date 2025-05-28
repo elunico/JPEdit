@@ -11,28 +11,28 @@ import java.util.stream.Collectors;
 
 public class PasteActionHandler extends ActionHandler {
 
-  public PasteActionHandler(JPEditWindow jpEditWindow) {
-    super(jpEditWindow);
-  }
-
-  private String getRichestData(Clipboard clipboard) {
-    if (clipboard.hasContent(DataFormat.HTML)) {
-      return clipboard.getHtml();
-    } else if (clipboard.hasContent(DataFormat.URL)) {
-      return clipboard.getUrl();
-    } else if (clipboard.hasContent(DataFormat.FILES)) {
-      return clipboard.getFiles().stream().map(File::getAbsolutePath).collect(Collectors.joining(", "));
-    } else if (clipboard.hasContent(DataFormat.RTF)) {
-      return clipboard.getRtf();
-    } else if (clipboard.hasContent(DataFormat.PLAIN_TEXT)) {
-      return clipboard.getString();
+    public PasteActionHandler(JPEditWindow jpEditWindow) {
+        super(jpEditWindow);
     }
-    return "";
-  }
 
-  @Override
-  public void handle(ActionEvent event) {
-    owner.getTextArea()
-         .insertText(owner.getTextArea().getCaretPosition(), getRichestData(Clipboard.getSystemClipboard()));
-  }
+    private String getRichestData(Clipboard clipboard) {
+        if (clipboard.hasContent(DataFormat.HTML)) {
+            return clipboard.getHtml();
+        } else if (clipboard.hasContent(DataFormat.URL)) {
+            return clipboard.getUrl();
+        } else if (clipboard.hasContent(DataFormat.FILES)) {
+            return clipboard.getFiles().stream().map(File::getAbsolutePath).collect(Collectors.joining(", "));
+        } else if (clipboard.hasContent(DataFormat.RTF)) {
+            return clipboard.getRtf();
+        } else if (clipboard.hasContent(DataFormat.PLAIN_TEXT)) {
+            return clipboard.getString();
+        }
+        return "";
+    }
+
+    @Override
+    public void handle(ActionEvent event) {
+        owner.getTextArea()
+             .insertText(owner.getTextArea().getCaretPosition(), getRichestData(Clipboard.getSystemClipboard()));
+    }
 }

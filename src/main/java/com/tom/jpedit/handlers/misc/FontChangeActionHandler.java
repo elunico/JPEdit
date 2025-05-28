@@ -7,13 +7,13 @@ import javafx.event.ActionEvent;
 
 public class FontChangeActionHandler extends ActionHandler {
 
-  public FontChangeActionHandler(JPEditWindow owner) {
-    super(owner);
-  }
+    public FontChangeActionHandler(JPEditWindow owner) {
+        super(owner);
+    }
 
-  @Override
-  public void handle(ActionEvent event) {
-    FontPrompt prompt = new FontPrompt(owner);
-    prompt.show();
-  }
+    @Override
+    public void handle(ActionEvent event) {
+        FontPrompt prompt = new FontPrompt(owner);
+        prompt.show();
+    }
 }

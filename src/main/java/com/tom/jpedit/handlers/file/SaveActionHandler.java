@@ -13,23 +13,23 @@ import java.io.File;
  */
 public class SaveActionHandler extends ActionHandler {
 
-  public SaveActionHandler(JPEditWindow jpEditWindow) {
-    super(jpEditWindow);
-  }
-
-  @Override
-  public void handle(ActionEvent event) {
-    SaveAsActionHandler handler = new SaveAsActionHandler(owner);
-    if (owner.hasSaveFile()) {
-      System.out.println(owner.getSaveFile());
-      handler.saveAs(owner.getSaveFile());
-    } else {
-      File file = handler.getFileFromUser(event);
-      if (file == null) {
-        return;
-      }
-      handler.saveAs(file);
+    public SaveActionHandler(JPEditWindow jpEditWindow) {
+        super(jpEditWindow);
     }
-  }
+
+    @Override
+    public void handle(ActionEvent event) {
+        SaveAsActionHandler handler = new SaveAsActionHandler(owner);
+        if (owner.hasSaveFile()) {
+            System.out.println(owner.getSaveFile());
+            handler.saveAs(owner.getSaveFile());
+        } else {
+            File file = handler.getFileFromUser(event);
+            if (file == null) {
+                return;
+            }
+            handler.saveAs(file);
+        }
+    }
 
 }

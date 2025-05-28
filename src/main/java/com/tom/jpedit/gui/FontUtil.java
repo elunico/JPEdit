@@ -7,6 +7,7 @@ import javafx.scene.text.FontWeight;
 public class FontUtil {
     /**
      * Returns a javafx font used for title labels
+     *
      * @return Font object for titles
      */
     public static Font getTitleLabelFont() {
@@ -15,6 +16,7 @@ public class FontUtil {
 
     /**
      * Returns a javafx font used for italics
+     *
      * @return an italic but otherwise plain font
      */
     public static Font getNormalItalicFont() {

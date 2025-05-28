@@ -9,25 +9,25 @@ import org.jetbrains.annotations.Nullable;
  * They can be prevented from opening multiple times
  */
 public abstract class DependantStage extends Stage {
-  protected DependableStage owner;
+    protected DependableStage owner;
 
-  public DependantStage() {
-    super();
-  }
-
-  public DependantStage(@Nullable DependableStage owner) {
-    super();
-    this.owner = owner;
-    if (owner != null) {
-      owner.registerDependent(this);
+    public DependantStage() {
+        super();
     }
-  }
 
-  @Override
-  public void close() {
-    if (owner != null) {
-      owner.deregisterDependent(this);
+    public DependantStage(@Nullable DependableStage owner) {
+        super();
+        this.owner = owner;
+        if (owner != null) {
+            owner.registerDependent(this);
+        }
     }
-    super.close();
-  }
+
+    @Override
+    public void close() {
+        if (owner != null) {
+            owner.deregisterDependent(this);
+        }
+        super.close();
+    }
 }

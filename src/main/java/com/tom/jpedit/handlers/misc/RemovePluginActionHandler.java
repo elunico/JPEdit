@@ -8,13 +8,13 @@ import javafx.event.ActionEvent;
 
 public class RemovePluginActionHandler extends ActionHandler {
 
-  public RemovePluginActionHandler(JPEditWindow jpEditWindow) {
-    super(jpEditWindow);
-  }
+    public RemovePluginActionHandler(JPEditWindow jpEditWindow) {
+        super(jpEditWindow);
+    }
 
-  @Override
-  public void handle(ActionEvent event) {
-    DependantStage prompt = new RemovePluginSelectionStage(owner);
-    prompt.showAndWait();
-  }
+    @Override
+    public void handle(ActionEvent event) {
+        DependantStage prompt = new RemovePluginSelectionStage(owner);
+        prompt.showAndWait();
+    }
 }
