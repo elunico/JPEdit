@@ -12,7 +12,13 @@ import java.util.List;
 public interface JPEditPlugin {
 
     /**
-     * This method is called <b>exactly once</b> when the plugin is loaded.
+     * This method is called <b>exactly once</b> when the plugin is being loaded
+     * but before it fully loads. As such, throughout the duration of this method
+     * the plugin is not considered loaded and other methods (like onNewWindow,
+     * onExit, etc) will not be called
+     *
+     * The plugin is considered 'loaded' when this method completes without throwing.
+     *
      * It is passed a list of all the {@link JPEditWindow} instances
      * that currently exist. The class that implements this
      * method is reflectively constructed and this method is called,
@@ -40,8 +46,8 @@ public interface JPEditPlugin {
     void onPluginLoad(@NotNull List<JPEditWindow> windows) throws Exception;
 
     /**
-     * This method is called <b>on every plugin</b> that is loaded one time whenever,
-     * and each time a new JPEditWindow is created.
+     * This method is called <b>on every plugin</b> that is loaded one time
+     * each time a new JPEditWindow is created.
      *
      * @param existingWindows a list of all the JPEditWindows that existed <b>before</b>
      *                        the creation of the new window

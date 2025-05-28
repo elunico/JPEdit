@@ -90,13 +90,13 @@ that the plugin cannot load and the exception will be logged
 
 #### The `void onNewWindow(List<JPEditWindow> existingWindows, JPEditWindow newWindow)` method
 
-This method is called for every plugin every time a new window is created. *Note to perform actions on window close,
-you should use `addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> { // code });`. No methods are explicitly
-provided for the closing of windows for this reason.*
+This method is called for every plugin every time a new window is created.
 
 #### The `void onWindowClose(List<JPEditWindow> existingWindows, JPEditWindow closingWindow)` method.
 
-This method was actually added to the interface after initial publication and as such is a default method that performs a NOP if not implemented. It is optional. However, if you choose to implement it, it is called every time a Window is closed with the remaining windows in a list and the closing window passed separately. The `existingWindows` list may be empty. `closingWindow` will not be null.
+This method was actually added to the interface after initial publication and as such is a default method that performs a NOP if not implemented. 
+It is optional. However, if you choose to implement it, it is called every time a Window is closed with the remaining windows in a list and the closing window passed separately. 
+The `existingWindows` list may be empty. `closingWindow` will not be null.
 
 #### The `void onExit()` method
 

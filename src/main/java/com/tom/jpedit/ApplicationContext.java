@@ -456,13 +456,23 @@ public class ApplicationContext {
      * <p>
      * Throws:
      * - {@code IllegalStateException} if the application is terminating.
+     *
+     * @return the newly created window
      */
-    public void createNewWindow() {
+    public JPEditWindow createNewWindow(boolean withFocus) {
         ensureNotTerminating();
         JPEditWindow newWindow = new JPEditWindow();
         ApplicationContext.getContext().registerWindow(newWindow);
         newWindow.setTitle("Untitled " + ApplicationContext.getContext().getTotalWindowCount());
         newWindow.show();
+        if (withFocus) {
+            newWindow.requestFocus();
+        }
+        return newWindow;
+    }
+
+    public JPEditWindow createNewWindow() {
+        return createNewWindow(true);
     }
 
     /**

@@ -69,11 +69,6 @@ public class LoadedJPPlugin {
         return mainClass.getClass().getSimpleName();
     }
 
-
-    public void onPluginLoad(@NotNull List<JPEditWindow> windows) throws Exception {
-        mainClass.onPluginLoad(windows);
-    }
-
     public void onNewWindow(@NotNull List<JPEditWindow> existingWindows, @NotNull JPEditWindow newWindow) {
         mainClass.onNewWindow(existingWindows, newWindow);
     }
