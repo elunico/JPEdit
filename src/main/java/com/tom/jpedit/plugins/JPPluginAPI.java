@@ -109,6 +109,23 @@ public class JPPluginAPI {
     }
 
     /**
+     * Convenience method to get preferences for this plugin only to ensure that the plugin is not trampling built-in
+     * preferences or the preferences of other plugins. Uses {@link #pluginQualifiedName(Class)} to avoid collisions
+     *
+     * @param mainClass the main plugin class implementing {@link JPEditPlugin}
+     * @param property  the name of the preference to get
+     * @param defaultValue     the default value to get if the property was not set
+     * @return the property retrieved, or defaultValue if no such property. Only returns null if defaultValue is also null
+     */
+    public static @Nullable String getLocalUserPreference(
+            @NotNull Class<? extends JPEditPlugin> mainClass,
+            String property,
+            @Nullable String defaultValue
+    ) {
+        return getUserPreferences().getProperty(localKeyName(mainClass, property), defaultValue);
+    }
+
+    /**
      * Get the users saved preferences Object. See {@link UserPreferences}.
      * <p>
      * Generally this method can be used for getting and modifying Application default settings-namely ones that already
