@@ -3,9 +3,11 @@ package com.tom.jpedit.plugins;
 import com.tom.jpedit.ApplicationContext;
 import com.tom.jpedit.gui.confirmation.ConfirmationDialog;
 import com.tom.jpedit.gui.confirmation.ConfirmationType;
+import com.tom.jpedit.util.LoadedJPPlugin;
 import com.tom.jpedit.util.UserPreferences;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tom.javafx.JavaFXUtilsKt;
 
 import java.io.BufferedReader;
@@ -15,6 +17,10 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
 /**
@@ -207,5 +213,34 @@ public class JPPluginAPI {
      */
     public static void showAlertNonModal(String title, String prompt, String message) {
         JavaFXUtilsKt.popupMessage(title, prompt, message, false);
+    }
+
+    /**
+     * @see #getPluginExecutor(Class)
+     */
+    private static final Map<Class<? extends JPEditPlugin>, ScheduledExecutorService> EXECUTOR_CACHE = new HashMap<>();
+
+    /**
+     * This method provides each plugin with a Single Threaded Executor for running or scheduling tasks
+     * <p>
+     * This executor service will be forcibly stopped when the application shuts down. All running tasks will be
+     *  interrupted, and queued tasks will be discarded. There is no way to stop this. All tasks submitted to the
+     * Executor should be able to handle being interrupted or discarded at shutdown
+     *
+     * @param pluginClass the main class (implementing JPEditPlugin) of your plugin
+     * @return the {@link Executor} for your plugin
+     * @see Executor
+     */
+    @NotNull
+    public static ScheduledExecutorService getPluginExecutor(Class<? extends JPEditPlugin> pluginClass) {
+        return EXECUTOR_CACHE.computeIfAbsent(pluginClass, key ->
+                ApplicationContext.getContext()
+                                  .getLoadedPlugins()
+                                  .stream()
+                                  .filter(p -> p.getMainClass().getClass().equals(key))
+                                  .findFirst()
+                                  .map(LoadedJPPlugin::getPluginExecutor)
+                                  .get()
+        );
     }
 }

@@ -86,9 +86,8 @@ public class ConfirmationDialog extends DependantStage {
             close();
         });
 
-        Button cancelButton = new CancelButton(i -> {
+        Button cancelButton = new CancelButton(this, i -> {
             ref.confirmed = ConfirmationType.CANCEL;
-            close();
         });
 
         buttonPane.add(cancelButton, 0, 0);

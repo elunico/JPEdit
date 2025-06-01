@@ -1,10 +1,25 @@
 package com.tom.jpedit.util;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class Version {
+public class Version implements Comparable<Version> {
+
+    @Override
+    public int compareTo(@NotNull Version o) {
+        var m = Integer.compare(major, o.major);
+        if (m == 0) {
+            var n = Integer.compare(minor, o.minor);
+            if (n == 0) {
+                return Integer.compare(patch, o.patch);
+            }
+            return n;
+        }
+        return m;
+    }
+
     private final int major, minor, patch;
     @Nullable
     private final String addendum;
@@ -22,11 +37,10 @@ public class Version {
 
     @Override
     public String toString() {
-        return "Version(" + major +
+        return "v" + major +
                 "." + minor +
                 "." + patch +
-                "-" + addendum +
-                ')';
+                "-" + addendum;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.tom.jpedit.util;
 
+import com.tom.jpedit.JPUtil;
 import com.tom.jpedit.logging.JPLogger;
 import javafx.scene.text.Font;
 import org.jetbrains.annotations.NotNull;

@@ -41,7 +41,7 @@ public class ChangeLocalePrompt extends DependantStage {
             var w = new ConfirmationDialog(null, "Quit Program", "Ok to close?", "JPEdit needs to restart to display locale changes.\nDo you want to exit the program now?");
             var resp = w.showPrompt();
             if (resp.equals(ConfirmationType.YES)) {
-                ApplicationContext.terminateEarly();
+                ApplicationContext.getContext().terminateEarly();
             } else {
                 w.close();
             }

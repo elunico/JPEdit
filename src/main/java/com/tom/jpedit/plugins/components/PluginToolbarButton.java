@@ -3,6 +3,9 @@ package com.tom.jpedit.plugins.components;
 import com.tom.jpedit.gui.JPEditWindow;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.event.EventHandler;
+
+import javafx.event.ActionEvent;
 
 public class PluginToolbarButton extends Button implements PluginOwnedComponent, Cloneable {
     private JPEditWindow owner;
@@ -17,6 +20,11 @@ public class PluginToolbarButton extends Button implements PluginOwnedComponent,
 
     public PluginToolbarButton(String title) {
         this(title, null);
+    }
+
+    public PluginToolbarButton(String title, Node graphic, EventHandler<ActionEvent> action) {
+        this(title, graphic);
+        setOnAction(action);
     }
 
     @Override

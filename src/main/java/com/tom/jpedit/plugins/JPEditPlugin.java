@@ -16,9 +16,9 @@ public interface JPEditPlugin {
      * but before it fully loads. As such, throughout the duration of this method
      * the plugin is not considered loaded and other methods (like onNewWindow,
      * onExit, etc) will not be called
-     *
+     * <p>
      * The plugin is considered 'loaded' when this method completes without throwing.
-     *
+     * <p>
      * It is passed a list of all the {@link JPEditWindow} instances
      * that currently exist. The class that implements this
      * method is reflectively constructed and this method is called,
@@ -137,6 +137,11 @@ public interface JPEditPlugin {
      * <p>
      * This method should do all the necessary tearing down and de-initialization
      * of the plugin such as saving files or settings and ending workers or threads.
+     * <p>
+     * Note that if your plugin uses {@link JPPluginAPI#getPluginExecutor(Class)} to schedule a task, this
+     * onExit method is called <b>before</b> the executor is stopped but only just before.
+     * <p>
+     * Note also that the executor is forcibly stopped when the program exits
      */
     void onExit();
 

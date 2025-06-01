@@ -13,6 +13,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * This class is an internal representation of a JPEditPlugin after it has been loaded by the program
@@ -25,6 +28,24 @@ public class LoadedJPPlugin {
     private final Map<JPEditWindow, PluginToolbarButton> button = new HashMap<>();
     private final Map<JPEditWindow, PluginMenuItem> item = new HashMap<>();
     private final Map<JPEditWindow, PluginKeyboardShortcut> shortcut = new HashMap<>();
+
+    private volatile ScheduledExecutorService pluginExecutor;
+
+    public ScheduledExecutorService getPluginExecutor() {
+        var result = pluginExecutor;
+        if (result == null) {
+            synchronized (this) {
+                result = pluginExecutor;
+                if (result == null) {
+                    result = Executors.newSingleThreadScheduledExecutor();
+                    pluginExecutor = result;
+                }
+            }
+        }
+        return pluginExecutor;
+    }
+
+
     private boolean isLoaded;
 
     public LoadedJPPlugin(JPEditPlugin mainClass, File loadedJARFile) {

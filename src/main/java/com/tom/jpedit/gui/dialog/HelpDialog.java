@@ -1,7 +1,10 @@
 package com.tom.jpedit.gui.dialog;
 
+import com.tom.jpedit.ApplicationContext;
 import com.tom.jpedit.gui.DependableStage;
 import com.tom.jpedit.gui.DependantStage;
+import com.tom.jpedit.gui.i18n.Strings;
+import com.tom.jpedit.util.Version;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,21 +16,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
 public class HelpDialog extends DependantStage {
-    private static final String shortcutExplanation =
-            "F1 -> display this help dialog\n" +
-                    "CTRL + N -> create a new file (prompt to save will be shown)\n" +
-                    "CTRL + S -> save file\n" +
-                    "CTRL + O -> open file\n" +
-                    "CTRL + F -> find in file\n" +
-                    "CTRL + R -> find and replace in file\n" +
-                    "CTRL + T -> insert time & date\n" +
-                    "CTRL + W -> close window (prompt to save will be shown)\n" +
-                    "CTRL + SHIFT + N -> make a new window\n" +
-                    "CTRL + SHIFT + S -> save file as...\n" +
-                    "CTRL + SHIFT + F -> choose font\n" +
-                    "CTRL + C -> copy selected text if any\n" +
-                    "CTRL + X -> cut selected text if any\n" +
-                    "CTRL + V -> paste selected text if any";
+    private static final String shortcutExplanation = Strings.Content.HELP_MENU_BLURB.text;
 
     public HelpDialog(DependableStage owner) {
         super(owner);
@@ -39,9 +28,9 @@ public class HelpDialog extends DependantStage {
         macNotice.setFont(Font.font(Font.getDefault().getFamily(), FontPosture.ITALIC, Font.getDefault()
                                                                                            .getSize() * 1.2));
         shortcuts.setFont(Font.font(Font.getDefault().getFamily(), Font.getDefault().getSize() * 1.25));
-        Label author = new Label("JPEdit by Thomas Povinelli (c) 2019");
+        Label author = new Label("JPEdit " + ApplicationContext.VERSION + " " + Strings.Content.COPYRIGHT_TEXT.text);
         author.setFont(Font.font(Font.getDefault().getSize()));
-        Button okButton = new Button("Close");
+        Button okButton = new Button(Strings.Content.FILE_MENU_ITEM_CLOSE.text);
 
         VBox root = new VBox(shortcutsHeader, shortcuts, macNotice, okButton, author);
         okButton.setOnAction(event -> close());
@@ -51,7 +40,7 @@ public class HelpDialog extends DependantStage {
         root.setPadding(new Insets(5));
         root.setSpacing(5);
 
-        setTitle("Help");
+        setTitle(Strings.Content.HELP_ITEM.text);
         setScene(new Scene(root));
         owner.registerDependent(this);
 

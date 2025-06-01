@@ -6,7 +6,6 @@ import com.tom.jpedit.handlers.misc.AddPluginActionHandler;
 import com.tom.jpedit.logging.JPLogger;
 import com.tom.jpedit.plugins.JPEditPlugin;
 import com.tom.jpedit.plugins.PluginProperties;
-import com.tom.jpedit.util.JPUtil;
 import com.tom.jpedit.util.LoadedJPPlugin;
 import com.tom.jpedit.util.UserPreferences;
 import com.tom.jpedit.util.Version;
@@ -14,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.scene.control.MenuItem;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static java.lang.StackWalker.Option.RETAIN_CLASS_REFERENCE;
@@ -47,7 +47,7 @@ public class ApplicationContext {
     public static final String PLUGIN_LIST_FILE_NAME = "loaded-plugins.txt";
 
     private static final ApplicationContext context = new ApplicationContext();
-    private static boolean terminating = false;
+    private boolean terminating = false;
 
     /**
      * Returns a list of codes which represent the properties files available for langugage conversion
@@ -79,27 +79,37 @@ public class ApplicationContext {
      * The method is static and operates at the application level, ensuring a controlled
      * and unified shutdown sequence across all managed components of the application.
      */
-    public static void terminateEarly() {
+    public void terminateEarly() {
+        // check to see if the program is already terminating
         if (terminating) {
             return;
         }
         terminating = true;
-        var size = context.getWindows().size();
+
+        // close all the main windows
+        closeAllWindows(getWindows());
+
+        // close all popups
+        closeAllWindows(popups);
+
+        // teardown the application as normal
+        context.teardown();
+        // System exit should happen naturally to allow hooking into the termination process
+        // System.exit(0);
+    }
+
+    private static void closeAllWindows(List<? extends Stage> windows) {
+        var size = windows.size();
         var events = new Event[size];
 
-        List<JPEditWindow> contextWindows = context.getWindows();
         for (int i = 0; i < size; i++) {
-            JPEditWindow w = contextWindows.get(i);
+            var w = windows.get(i);
             events[i] = new WindowEvent(w, WindowEvent.WINDOW_CLOSE_REQUEST);
         }
 
         for (Event event : events) {
             Event.fireEvent(event.getTarget(), event);
         }
-
-        context.teardown();
-        // System exit should happen naturally to allow hooking into the termination process
-        // System.exit(0);
     }
 
     private static void checkCallerClass(Class<?>[] validCallers, String msg) throws IllegalAccessException {
@@ -138,13 +148,12 @@ public class ApplicationContext {
         item.setDisable(true);
         return List.of(item);
     }
+
     private final List<JPEditWindow> windows = new ArrayList<>();
+    private final List<Stage> popups = new ArrayList<>();
     private final ObservableList<LoadedJPPlugin> loadedPlugins = FXCollections.observableArrayList();
-    private final ThreadGroup autoSaveWorkersThreadGroup = new ThreadGroup(
-            Thread.currentThread()
-                  .getThreadGroup(),
-            "Auto Save Workers Thread"
-    );
+    private final ThreadGroup autoSaveWorkersThreadGroup = new ThreadGroup(Thread.currentThread()
+                                                                                 .getThreadGroup(), "Auto Save Workers Thread");
     private final Properties properties = new Properties();
     private final UserPreferences userPreferences = new UserPreferences();
     private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(8);
@@ -159,6 +168,7 @@ public class ApplicationContext {
     private ApplicationContext() {
         loadProperties();
         loadPreferences();
+        //TODO: if a plugin calls getContext() in its onPluginLoad method, a NPE occurs only if the plugin was already loaded since reloading plugins occurs before construction completes
         loadPlugins();
         executor.setRemoveOnCancelPolicy(true);
     }
@@ -189,22 +199,18 @@ public class ApplicationContext {
                 var jarFile = new File(line.trim());
                 var name = JPUtil.mainClassFromJAR(jarFile);
                 if (name == null) {
-                    JavaFXUtilsKt.popupMessage(
-                            "Missing Plugin",
-                            "Could not load plugin " + line,
-                            "The plugin jar could not be found"
-                    );
+                    JPUtil.popupMessage("Missing Plugin", "Could not load plugin " + line, "The plugin jar could not be found");
                     return;
                 }
                 loadPluginClass(jarFile, name);
             });
         } catch (IOException e) {
-            JavaFXUtilsKt.popupMessage(
-                    "Missing Plugin",
-                    "Could not load plugin",
-                    "The plugin jar could not be found\n" + e.getMessage() + "\n" + JavaFXUtilsKt.stackTraceToString(e.getStackTrace())
-            );
+            JPUtil.popupMessage("Missing Plugin", "Could not load plugin", "The plugin jar could not be found\n" + e.getMessage() + "\n" + JavaFXUtilsKt.stackTraceToString(e.getStackTrace()));
         }
+    }
+
+    List<Stage> getPopups() {
+        return popups;
     }
 
     /**
@@ -219,10 +225,7 @@ public class ApplicationContext {
     public void loadPluginClass(@NotNull File jar, @NotNull String mainClassName) {
         ensureNotTerminating();
         try {
-            checkCallerClass(
-                    new Class[]{ ApplicationContext.class, AddPluginActionHandler.class },
-                    "Do not call loadPluginClass! The program will call it when you load the plugin in the GUI"
-            );
+            checkCallerClass(new Class[]{ ApplicationContext.class, AddPluginActionHandler.class }, "Do not call loadPluginClass! The program will call it when you load the plugin in the GUI");
             ClassLoader loader = ApplicationContext.class.getClassLoader();
             URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{ jar.toURI().toURL() }, loader);
             String qualifiedName = qualifyPluginMainClassName(mainClassName);
@@ -231,46 +234,22 @@ public class ApplicationContext {
             JPEditPlugin pluginClass = mainClass.getConstructor().newInstance();
             registerPlugin(jar, pluginClass);
         } catch (MalformedURLException e) {
-            JavaFXUtilsKt.popupMessage(
-                    "Error loading plugin",
-                    "Invalid URL for JAR " + jar.toURI(),
-                    JavaFXUtilsKt.stackTraceToString(e.getStackTrace())
-            );
+            JPUtil.popupMessage("Error loading plugin", "Invalid URL for JAR " + jar.toURI(), JavaFXUtilsKt.stackTraceToString(e.getStackTrace()));
             JPLogger.getErrLog().severe("Could not load plugin " + e.getMessage());
         } catch (ClassNotFoundException e) {
-            JavaFXUtilsKt.popupMessage(
-                    "Error loading plugin",
-                    "No such class: '" + mainClassName + "'",
-                    JavaFXUtilsKt.stackTraceToString(e.getStackTrace())
-            );
+            JPUtil.popupMessage("Error loading plugin", "No such class: '" + mainClassName + "'", JavaFXUtilsKt.stackTraceToString(e.getStackTrace()));
             JPLogger.getErrLog().severe("Could not load plugin " + e.getMessage());
         } catch (IllegalAccessException | InvocationTargetException e) {
-            JavaFXUtilsKt.popupMessage(
-                    "Error loading plugin",
-                    "Access or Invocation Target is invalid in class " + mainClassName,
-                    JavaFXUtilsKt.stackTraceToString(e.getStackTrace())
-            );
+            JPUtil.popupMessage("Error loading plugin", "Access or Invocation Target is invalid in class " + mainClassName, JavaFXUtilsKt.stackTraceToString(e.getStackTrace()));
             JPLogger.getErrLog().severe("Could not load plugin " + e.getMessage());
         } catch (NoSuchMethodException | InstantiationException e) {
-            JavaFXUtilsKt.popupMessage(
-                    "Could not instantiate Plugin Instance",
-                    "Plugins must implement the JPEditPlugin interface and all of its methods\n" + "And declare a single no-argument constructor",
-                    JavaFXUtilsKt.stackTraceToString(e.getStackTrace())
-            );
+            JPUtil.popupMessage("Could not instantiate Plugin Instance", "Plugins must implement the JPEditPlugin interface and all of its methods\n" + "And declare a single no-argument constructor", JavaFXUtilsKt.stackTraceToString(e.getStackTrace()));
             JPLogger.getErrLog().severe("Could not load plugin " + e.getMessage());
         } catch (ClassCastException e) {
-            JavaFXUtilsKt.popupMessage(
-                    "Plugin Load Error: Not a Plugin",
-                    "Plugins must contain a class with the same name as the jar file (" + mainClassName + ") that they are loaded from" + " which implement the com.tom.jpedit.plugins.JPEditPlugin interface.",
-                    JavaFXUtilsKt.stackTraceToString(e.getStackTrace())
-            );
+            JPUtil.popupMessage("Plugin Load Error: Not a Plugin", "Plugins must contain a class with the same name as the jar file (" + mainClassName + ") that they are loaded from" + " which implement the com.tom.jpedit.plugins.JPEditPlugin interface.", JavaFXUtilsKt.stackTraceToString(e.getStackTrace()));
             JPLogger.getErrLog().severe("Could not load plugin " + e.getMessage());
         } catch (Exception e) {
-            JavaFXUtilsKt.popupMessage(
-                    "Error loading plugin",
-                    "Unexpected error occurred during load: " + e.getMessage(),
-                    JavaFXUtilsKt.stackTraceToString(e.getStackTrace())
-            );
+            JPUtil.popupMessage("Error loading plugin", "Unexpected error occurred during load: " + e.getMessage(), JavaFXUtilsKt.stackTraceToString(e.getStackTrace()));
             JPLogger.getErrLog().severe("Could not load plugin " + e.getMessage());
         }
     }
@@ -306,11 +285,7 @@ public class ApplicationContext {
             String msg = e.getMessage();
             String pluginName = pluginClass.getClass().getName();
             String message = "Failed to load plugin " + pluginName + "\n" + exName + ": " + msg;
-            JavaFXUtilsKt.popupMessage(
-                    "Plugin Error!",
-                    message,
-                    message + "\n" + JavaFXUtilsKt.stackTraceToString(e.getStackTrace())
-            );
+            JPUtil.popupMessage("Plugin Error!", message, message + "\n" + JavaFXUtilsKt.stackTraceToString(e.getStackTrace()));
             String loggerMsg = "Failed to load plugin " + message + "\n" + JavaFXUtilsKt.stackTraceToString(e.getStackTrace());
             JPLogger.getErrLog().severe(loggerMsg);
             return null;
@@ -339,13 +314,8 @@ public class ApplicationContext {
     }
 
     private void unexpectedPropertiesNull() {
-        NullPointerException npe = new NullPointerException(
-                "pluginProperties() returned null for some calls but not for others.");
-        JavaFXUtilsKt.popupMessage(
-                "Error in PluginProperties",
-                "pluginProperties() should not return null after having returned non-null",
-                JavaFXUtilsKt.stackTraceToString(npe.getStackTrace())
-        );
+        NullPointerException npe = new NullPointerException("pluginProperties() returned null for some calls but not for others.");
+        JPUtil.popupMessage("Error in PluginProperties", "pluginProperties() should not return null after having returned non-null", JavaFXUtilsKt.stackTraceToString(npe.getStackTrace()));
     }
 
     private void loadPreferences() {
@@ -364,13 +334,14 @@ public class ApplicationContext {
                 properties.load(new InputStreamReader(new FileInputStream("app.properties")));
             }
         } catch (IOException e) {
-            System.err.println("Could not read properties. Using defaults");
-            properties.put("recent_files_dir", "recentfiles");
-            properties.put("recent_files_file", "recentfiles.txt");
-            properties.put("log_file_dir", "logs");
-            properties.put("log_file_app", "application.log");
-            properties.put("log_file_err", "error.log");
-            properties.put("tempsaves_dir", "tempsaves");
+            throw new RuntimeException(e);
+//            System.err.println("Could not read properties. Using defaults");
+//            properties.put("recent_files_dir", "recentfiles");
+//            properties.put("recent_files_file", "recentfiles.txt");
+//            properties.put("log_file_dir", "logs");
+//            properties.put("log_file_app", "application.log");
+//            properties.put("log_file_err", "error.log");
+//            properties.put("tempsaves_dir", "tempsaves");
         }
     }
 
@@ -408,6 +379,8 @@ public class ApplicationContext {
         duplicate.show();
     }
 
+
+
     void registerWindow(@NotNull JPEditWindow window) {
         try {
             Class<?>[] callers = { ApplicationContext.class, Driver.class };
@@ -419,18 +392,15 @@ public class ApplicationContext {
 
         JPLogger.debug(JPLogger.getAppLog(), "Registering Window " + window.getTitle());
         for (LoadedJPPlugin plugin : loadedPlugins) {
+            plugin.onNewWindow(windows, window);
             try {
-                plugin.onNewWindow(windows, window);
                 PluginProperties properties = plugin.pluginProperties();
                 if (properties != null) {
                     window.addPluginProperties(properties, plugin);
                 }
             } catch (Exception e) {
-                throw new RuntimeException(
-                        "The plugin " + plugin.getClass()
-                                              .getCanonicalName() + " caused in error during construction of a new window.",
-                        e
-                );
+                throw new RuntimeException("The plugin " + plugin.getClass()
+                                                                 .getCanonicalName() + " caused in error during construction of a new window.", e);
             }
         }
         windows.add(window);
@@ -492,7 +462,7 @@ public class ApplicationContext {
 
     public void newRecentFile(File f) {
         recentFiles.remove(f);
-        recentFiles.add(0, f);
+        recentFiles.addFirst(f);
         try {
             saveRecentFiles();
             for (JPEditWindow window : windows) {
@@ -537,7 +507,7 @@ public class ApplicationContext {
      * This method should <b>NOT</b> be called by plugins. To terminate the application
      * at an arbitrary point use {@link ApplicationContext#terminateEarly()}
      */
-    public void teardown() {
+    void teardown() {
         terminating = true;
         try {
             JPLogger.getAppLog().info("Saving recent files...");
@@ -548,6 +518,7 @@ public class ApplicationContext {
             JPLogger.getAppLog().info("Done!");
             JPLogger.getAppLog().info("Tearing down plugins...");
             loadedPlugins.forEach(LoadedJPPlugin::onExit);
+            loadedPlugins.forEach(plugin -> plugin.getPluginExecutor().shutdownNow());
             JPLogger.getAppLog().info("Done!");
             JPLogger.getAppLog().info("Saving loaded plugins...");
             saveLoadedPlugins();
@@ -569,11 +540,7 @@ public class ApplicationContext {
                 writer.write(path + System.lineSeparator());
             }
         } catch (IOException e) {
-            JavaFXUtilsKt.popupMessage(
-                    "Error saving Plugins",
-                    "Could not save loaded plugin list",
-                    "The list of loaded plugins could not be saved\n" + e.getMessage() + "\n" + JavaFXUtilsKt.stackTraceToString(e.getStackTrace())
-            );
+            JPUtil.popupMessage("Error saving Plugins", "Could not save loaded plugin list", "The list of loaded plugins could not be saved\n" + e.getMessage() + "\n" + JavaFXUtilsKt.stackTraceToString(e.getStackTrace()));
 
         }
     }

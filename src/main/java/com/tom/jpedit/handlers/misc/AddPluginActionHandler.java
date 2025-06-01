@@ -3,7 +3,7 @@ package com.tom.jpedit.handlers.misc;
 import com.tom.jpedit.ApplicationContext;
 import com.tom.jpedit.gui.JPEditWindow;
 import com.tom.jpedit.handlers.ActionHandler;
-import com.tom.jpedit.util.JPUtil;
+import com.tom.jpedit.JPUtil;
 import javafx.event.ActionEvent;
 import javafx.stage.FileChooser;
 

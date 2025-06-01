@@ -1,5 +1,6 @@
-package com.tom.jpedit.util;
+package com.tom.jpedit;
 
+import javafx.stage.Stage;
 import org.jetbrains.annotations.Nullable;
 import tom.javafx.JavaFXUtilsKt;
 
@@ -84,5 +85,54 @@ public class JPUtil {
             return null;
         }
         return filenameComponents[0];
+    }
+
+
+    /**
+     * Display a message in a popup to the user
+     * @param title the title of the window
+     * @param header the header of the message
+     * @param message the message content
+     * @return the window containing the popup
+     */
+    public static Stage popupMessage(String title, String header, String message) {
+        var stage = JavaFXUtilsKt.popupMessage(title, header, message);
+//        ApplicationContext.getContext().getPopups().add(stage);
+        return stage;
+    }
+
+    /**
+     * Popup an alert to the user with a simple message. Choosing to let the application continue in the background
+     * if wait is false or create a modal popup if wait is true
+     * @param s the message to popup
+     * @param title the title of the message
+     * @param wait if true, pause the application and wait for the window to close
+     * @return the stage popup
+     */
+    public static Stage popupAlert(String s, String title, boolean wait) {
+        var stage = JavaFXUtilsKt.popupAlert(s, title, wait);
+//        ApplicationContext.getContext().getPopups().add(stage);
+        return stage;
+    }
+
+    /**
+     * An overload for {@link #popupAlert(String, String, boolean)}
+     * @param s
+     * @param title
+     * @return the popup stage
+     * @see #popupAlert(String, String, boolean)
+     */
+    public static Stage popupAlert(String s, String title) {
+        return popupAlert(s, title, false);
+    }
+
+    /**
+     * An overload for {@link #popupAlert(String, String, boolean)}
+     * @param s
+     * @return the popup stage
+     * @see #popupAlert(String, String, boolean)
+     */
+    public static Stage popupAlert(String s) {
+        return popupAlert(s, "Alert", false);
     }
 }

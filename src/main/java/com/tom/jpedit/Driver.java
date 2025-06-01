@@ -74,7 +74,7 @@ public class Driver extends Application {
         }
     }
 
-    private void recoverAllTempFiles(@NotNull File[] contents) {
+    private void recoverAllTempFiles(@NotNull File @NotNull [] contents) {
         for (File tf : contents) {
             try (BufferedReader reader = new BufferedReader(new FileReader(tf))) {
                 String recovered = reader.lines().collect(Collectors.joining(System.lineSeparator()));
@@ -92,7 +92,7 @@ public class Driver extends Application {
         }
     }
 
-    private void removeRecoverableFiles(@NotNull File[] contents) {
+    private void removeRecoverableFiles(@NotNull File @NotNull [] contents) {
         for (File tf : contents) {
             try {
                 JPLogger.getAppLog().info("Attempting to delete " + tf.toPath());

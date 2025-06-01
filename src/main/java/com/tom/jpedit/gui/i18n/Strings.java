@@ -102,7 +102,9 @@ public final class Strings {
         ADVANCED_MENU_CHANGE_LOCALE,
         ADVANCED_MENU_ADD_EDIT_STRINGS,
 
-        ;
+        COPYRIGHT_TEXT,
+
+        HELP_MENU_BLURB;
 
         public String text;
 
@@ -153,12 +155,20 @@ public final class Strings {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String s;
             while ((s = reader.readLine()) != null) {
+                s = s.trim();
+                if (s.isEmpty() || s.startsWith("#")) {
+                    continue;
+                }
+                if (s.endsWith("\\")) {
+                    StringBuilder sb = new StringBuilder();
+                    do {
+                        sb.append(s, 0,  s.length() - 1);
+                        sb.append("\n");
+                        s = reader.readLine();
+                    } while (s != null && s.endsWith("\\"));
+                    s = sb.toString();
+                }
                 try {
-                    // Skip empty lines and comments
-                    if (s.trim().isEmpty() || s.startsWith("#")) {
-                        continue;
-                    }
-
                     var split = s.split("=", 2); // limit to 2 parts to handle = in values
                     if (split.length >= 1) {
                         String key = split[0].trim();

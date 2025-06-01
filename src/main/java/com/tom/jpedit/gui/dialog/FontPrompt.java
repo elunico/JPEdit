@@ -65,7 +65,7 @@ public class FontPrompt extends DependantStage {
         root.add(fontWeightBox, 1, 2);
         root.add(fontItalicBox, 1, 3);
 
-        Button cancelButton = new CancelButton(e -> close());
+        Button cancelButton = new CancelButton(this);
         Button okButton = new OkButton(e -> {
             setFont();
             close();
